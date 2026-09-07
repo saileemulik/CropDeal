@@ -1,0 +1,89 @@
+<div class="signup-wrapper d-flex justify-content-center align-items-center vh-100 ">
+  <div class="signup-container  p-4 shadow bg-white" style="width: 100%; max-width: 500px;">
+    <div class="d-flex align-items-center mb-3">
+        <i class="bi bi-arrow-left-circle-fill fs-1 me-2  back-arrow" role="button" (click)="goBack()"
+          title="Go back"></i>
+        <!-- <span class="fw-semibold">Go Back</span> -->
+      </div>
+
+    <!-- Logo -->
+    <div class="text-center mb-4">
+      <img src="assets/download.jpg" alt="Logo" class="img-fluid" style="max-height: 80px;" />
+      <h4 class="mt-2 text-success fw-bold">CropDeal Signup</h4>
+    </div>
+
+    <!-- Signup Form -->
+    <form id="signup-form" class="signup-form" (ngSubmit)="onSubmit()">
+    
+
+
+      <div class="mb-3 input-group">
+        <span class="input-group-text border-success text-success"><i class="bi bi-person"></i></span>
+        <input type="text" id="name" class="form-control mx-1" [(ngModel)]="name" name="name"
+          placeholder="Enter your name" required />
+      </div>
+      <small class="text-danger">{{ nameError }}</small>
+
+      <div class="mb-3 input-group">
+        <span class="input-group-text border-success text-success"><i class="bi bi-envelope"></i></span>
+        <input type="email" id="email" class="form-control mx-1" [(ngModel)]="email" name="email"
+          placeholder="Enter your email" required />
+      </div>
+      <small class="text-danger">{{ emailError }}</small>
+
+      <div class="mb-3 input-group">
+        <span class="input-group-text border-success text-success"><i class="bi bi-telephone"></i></span>
+        <input type="text" id="phoneNumber" class="form-control mx-1" [(ngModel)]="phoneNumber" name="phoneNumber"
+          placeholder="Enter your phone number" required />
+      </div>
+      <small class="text-danger">{{ phoneNumberError }}</small>
+
+      <div class="mb-3 input-group">
+        <span class="input-group-text border-success text-success"><i class="bi bi-lock"></i></span>
+        <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control mx-1"
+          [(ngModel)]="password" name="password" placeholder="Enter your password" required />
+        <button type="button" class="btn btn-outline-success" (click)="showPassword = !showPassword">
+          <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+        </button>
+      </div>
+      <small class="text-danger">{{ passwordError }}</small>
+
+      <div class="mb-3 input-group">
+        <span class="input-group-text border-success text-success"><i class="bi bi-lock-fill"></i></span>
+        <input type="password" id="confirm-password" class="form-control mx-1" [(ngModel)]="confirmPassword"
+          name="confirmPassword" placeholder="Confirm your password" required />
+      </div>
+      <small class="text-danger">{{ confirmPasswordError }}</small>
+
+      <div class="mb-3 input-group">
+        <span class="input-group-text border-success text-success"><i class="bi bi-geo-alt"></i></span>
+        <input type="text" id="location" class="form-control mx-1" [(ngModel)]="location" name="location"
+          placeholder="Enter your city" required />
+      </div>
+      <small class="text-danger">{{ locationError }}</small>
+
+      <div class="mb-3">
+        <label for="role" class="form-label fw-semibold mx-2">Role</label>
+        <select class="form-select custom-select-role" [(ngModel)]="role" name="role" required>
+          <option *ngFor="let r of userRoleList" [value]="r">{{ r }}</option>
+        </select>
+        <small class="text-danger">{{ roleError }}</small>
+      </div>
+
+
+      <div class="d-grid mt-3 mb-2">
+        <button type="submit" class="btn btn-success"
+          [disabled]="!name || !email || !phoneNumber || !password || !confirmPassword || !location || !role">
+          Sign Up
+        </button>
+      </div>
+
+      <div class="text-center">
+        <p class="medium">Already have an account?
+          <a class="text-success fw-bold" [routerLink]="'/login'"><strong>Go To Login</strong></a>
+        </p>
+      </div>
+    </form>
+
+  </div>
+</div>

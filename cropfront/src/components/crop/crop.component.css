@@ -1,0 +1,29 @@
+/* Light green card background */
+.bg-light-green {
+  background-color: #f0fdf4; /* soft green tint */
+}
+.full-bg{
+     min-height: 85vh
+}
+/* Crop card custom style */
+.crop-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+  border: 1px solid #19875433; /* light green border */
+}
+
+.crop-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 128, 0, 0.1);
+}
+
+/* Optional: make card titles bolder */
+.crop-card .card-title {
+  font-weight: 600;
+}
+
+/* Optional: crop subtitle spacing */
+.crop-card .card-subtitle {
+  margin-top: 4px;
+}

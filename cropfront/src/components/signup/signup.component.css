@@ -1,0 +1,102 @@
+.signup-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;  
+  padding-bottom: 70px;
+  min-height: calc(100vh - 120px); 
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.signup-container {
+ background: linear-gradient(135deg, #e6f4ea, #c1e1c1);
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid green;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.signup-form h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+}
+.back-arrow{
+  color: #198754;;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.back-arrow:hover {
+  color: #198754;
+  transform: scale(1.1);
+  transition: all 0.2s;
+}
+.signup-form input {
+  padding: 10px;
+  border: 1px solid green;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+.login-link {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.login-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.custom-select-role {
+  border: 1.5px solid #ced4da;
+  border-radius: 0.5rem;
+  padding: 0.55rem 1rem;
+  font-size: 1rem;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  background-color: #fff;
+  color: #495057;
+  box-shadow: none;
+}
+
+.custom-select-role:focus {
+  border-color: #198754; /* Bootstrap success green */
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+  outline: none;
+}
+
+.custom-select-role:hover {
+  border-color: #198754;
+}
+

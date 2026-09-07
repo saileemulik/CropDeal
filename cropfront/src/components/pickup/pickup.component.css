@@ -1,0 +1,62 @@
+/* Card container */
+.pickup-card {
+  border: 2px solid #198754;
+  border-radius: 12px;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Table styling */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid #dee2e6;
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #198754;
+}
+
+/* Button styling */
+.btn-sm {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+}
+
+.btn-outline-info {
+  border-color: #0dcaf0;
+  color: #0dcaf0;
+}
+
+.btn-outline-info:hover {
+  background-color: #0dcaf0;
+  color: #fff;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Input field */
+input[type="datetime-local"] {
+  font-size: 0.9rem;
+  padding: 0.4rem;
+}
+
+/* Select dropdown */
+.form-select {
+  font-size: 0.9rem;
+  padding: 0.4rem;
+}

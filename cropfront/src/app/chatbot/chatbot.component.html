@@ -1,0 +1,38 @@
+<!-- Chatbot Toggle Button -->
+<div class="chatbot-toggle" (click)="toggleChat()" [class.open]="isOpen">
+  <i class="fas fa-comments"></i>
+</div>
+
+<!-- Chatbot Window -->
+<div class="chatbot-window" [class.open]="isOpen">
+  <div class="chatbot-header">
+    <h4>CropDeal Assistant</h4>
+    <button class="close-btn" (click)="toggleChat()">&times;</button>
+  </div>
+  
+  <div class="chatbot-messages">
+    <div *ngFor="let message of messages" 
+         class="message" 
+         [class.user-message]="message.isUser"
+         [class.bot-message]="!message.isUser">
+      <div class="message-content">{{ message.text }}</div>
+      <div class="message-time">{{ message.timestamp | date:'short' }}</div>
+    </div>
+    
+    <div *ngIf="isLoading" class="message bot-message">
+      <div class="message-content typing">Typing...</div>
+    </div>
+  </div>
+  
+  <div class="chatbot-input">
+    <input 
+      type="text" 
+      [(ngModel)]="currentMessage" 
+      (keypress)="onKeyPress($event)"
+      placeholder="Type your message..."
+      [disabled]="isLoading">
+    <button (click)="sendMessage()" [disabled]="!currentMessage.trim() || isLoading">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+  </div>
+</div>

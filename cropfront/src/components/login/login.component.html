@@ -1,0 +1,119 @@
+<div class="login-wrapper d-flex justify-content-center align-items-center  bg-white">
+  <div class="login-container p-3 shadow border-success" style="width: 100%; max-width: 500px;">
+<div class="d-flex align-items-center mb-3">
+        <i class="bi bi-arrow-left-circle-fill  me-2  back-arrow" role="button" (click)="goBack()"
+          title="Go back"></i>
+        <!-- <span class="fw-semibold">Go Back</span> -->
+      </div>
+    <!-- Logo -->
+    <div class="text-center mb-4">
+      <img src="assets/download.jpg" alt="Logo" class="img-fluid" style="max-height: 80px;" />
+      <h4 class="mt-2 text-success fw-bold">CropDeal Login</h4>
+    </div>
+
+    <!-- Login Form -->
+    <form *ngIf="!showForgotPasswordForm && !showResetPasswordForm" (ngSubmit)="onSubmit()" class="login-form">
+      
+
+      <div class="mb-3">
+        <!-- <label for="email" class="form-label">Email</label> -->
+        <div class="input-group">
+          <span class="input-group-text border-success text-success"><i class="bi bi-envelope border"></i></span>
+          <input type="email" id="email" class="form-control mx-1" [(ngModel)]="email" name="email" required
+            placeholder="Enter Email" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <!-- <label for="password" class="form-label">Password</label> -->
+        <div class="input-group">
+          <span class="input-group-text  border-success text-success"><i class="bi bi-lock"></i></span>
+          <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control mx-1"
+            [(ngModel)]="password" name="password" required placeholder="Enter Password" />
+          <button type="button" class="btn btn-outline-success" (click)="showPassword = !showPassword">
+            <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="loginError" class="text-danger small mb-2">{{ loginError }}</div>
+
+      <div class="d-grid mb-1">
+        <button type="submit" class="btn btn-success btn-lg">Login</button>
+      </div>
+
+      <div class="text-end mb-3">
+        <a (click)="showForgotPasswordForm = true" style="cursor: pointer;" class="text-decoration-none">Forgot
+          Password?</a>
+      </div>
+    </form>
+
+    <!-- Forgot Password Form -->
+    <form *ngIf="showForgotPasswordForm" (ngSubmit)="submitForgotPassword()" class="login-form">
+      <h5 class="mb-1 text-success">Forgot Password</h5>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <div class="input-group">
+          <span class="input-group-text  border-success text-success"><i class="bi bi-envelope"></i></span>
+          <input type="email" class="form-control mx-1" [(ngModel)]="forgotEmail" name="forgotEmail" required>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2 mb-2">
+        <button type="submit" class="btn btn-success mx-1">Send OTP</button>
+        <button type="button" class="btn btn-outline-success mx-1 " (click)="showForgotPasswordForm = false">Back</button>
+      </div>
+    </form>
+
+    <!-- Reset Password with OTP Form -->
+   <form *ngIf="showResetPasswordForm" (ngSubmit)="reset()" class="login-form">
+  <h5 class="mb-3">Reset Password</h5>
+
+  <div class="mb-3">
+    <label class="form-label" for="otp">OTP</label>
+    <input type="text" class="form-control" [(ngModel)]="otp" name="otp" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">New Password</label>
+    <div class="input-group">
+      <span class="input-group-text border-success text-success"><i class="bi bi-lock"></i></span>
+      <input [type]="showNewPassword ? 'text' : 'password'" class="form-control" [(ngModel)]="newPassword" name="newPassword" required>
+      <button type="button" class="btn btn-outline-secondary" (click)="showNewPassword = !showNewPassword">
+        <i class="bi" [ngClass]="showNewPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="d-grid gap-2">
+    <button type="submit" class="btn btn-success">Reset Password</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="showResetPasswordForm = false">Back</button>
+  </div>
+</form>
+
+    <!-- Success/Error Message -->
+    <div *ngIf="message" class="mt-3 text-center text-info">{{ message }}</div>
+
+    <!-- Signup Prompt -->
+    <div class="text-center mt-1" *ngIf="!showForgotPasswordForm && !showResetPasswordForm">
+      <p class="medium">Don't have an account?
+        <a class="text-success fw-bold" [routerLink]="'/signup'"><strong>Sign Up</strong></a>
+      </p>
+    </div>
+    <strong class="text-info text-center">OR</strong>
+<div class="container d-flex mt-3 justify-content-center">
+  <!-- <h3>Login with Google</h3> -->
+  <label for="roleSelect" class="form-label mt-2 ">Select Role:</label>
+  <select id="roleSelect" [(ngModel)]="selectedRole" class="form-select mb-3 m-2">
+    <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+  </select>
+
+  <button (click)="onGoogleLogin()" class="btn btn-sm btn-danger">
+    <i class="bi bi-google"></i> Login with Google
+  </button>
+</div>
+  </div>
+  
+
+</div>

@@ -1,0 +1,18 @@
+/* Navbar Link Styling */
+.nav-link {
+  border-bottom: 2px solid transparent;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  border-bottom: 2px solid #28a745;
+  background-color: #f8f9fa;
+  color: #28a745;
+}
+
+.active-link {
+  border-bottom: 3px solid #198754;
+  color: #198754 !important;
+  font-weight: 600;
+}

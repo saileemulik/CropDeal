@@ -1,0 +1,189 @@
+<div *ngIf="activeSection === 'manageuser'" class="container mt-4">
+
+  <!-- Header + Toggle -->
+  <!-- Show list/grid only when not editing -->
+<div *ngIf="!selectedUser">
+  <!-- Toggle Button -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="text-success fw-bold "></h2>
+    <button class="btn btn-outline-success btn-sm" (click)="toggleView()">
+      <i class="fa" [ngClass]="isGridView ? 'fa-list' : 'fa-th'"></i>
+      {{ isGridView ? 'List View' : 'Grid View' }}
+    </button>
+  </div>
+<!-- 🔍 Filter Section -->
+<div class="row mb-3">
+  <div class="col-md-6">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Search by Name"
+      [(ngModel)]="searchName"
+      (input)="filterUsers()"
+    />
+  </div>
+  <div class="col-md-6">
+    <select
+      class="form-select"
+      [(ngModel)]="selectedRole"
+      (change)="filterUsers()"
+    >
+      <option value="">All Roles</option>
+      <option *ngFor="let role of availableRoles" [value]="role">{{ role }}</option>
+    </select>
+  </div>
+</div>
+
+  <!-- Grid View -->
+   <div class="card border-success shadow-sm bg-light-green mt-3 mb-3">
+    <div class="card-header bg-success text-white text-center">
+    <h5 class="mb-0">Manage Users</h5>
+  </div>
+
+  <div *ngIf="isGridView" class="row  g-5 m-4">
+   <div *ngFor="let u of filteredUsers" class="col-md-6 col-lg-4 col-xl-3 mb-4">
+
+      <div class="card h-100 border border-success shadow-sm user-card-hover ">
+        <div class="card-body text-center d-flex flex-column justify-content-between">
+          <div>
+            <div class="initial-circle text-white bg-success mb-2 mx-auto">
+  {{ u.name.charAt(0).toUpperCase() }}
+</div>
+            <h6 class="fw-semibold mb-1">{{ u.name }}</h6>
+            <p class="text-muted small mb-2">{{ u.email }}</p>
+            <span class="badge text-white "
+              [ngClass]="{
+                'bg-success  ': u.status === 'Active',
+                'bg-danger ': u.status === 'Inactive'
+              }">
+              {{ u.status }}
+            </span>
+          </div>
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <button class="btn btn-warning btn-sm mx-1" (click)="enableUserEdit(u)">
+              <i class="fa-regular fa-pen-to-square me-1 mx-1"></i>Edit
+            </button>
+            <button class="btn btn-danger btn-sm mx-1" (click)="deleteUser(u.id)">
+              <i class="fas fa-trash me-1 mx-1"></i>Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- List View -->
+  <div *ngIf="!isGridView" class="table-responsive ">
+    
+    <table class="table custom-table text-center align-middle">
+      <thead class="">
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+       <tr *ngFor="let u of filteredUsers">
+
+          <td>{{ u.name }}</td>
+          <td>{{ u.email }}</td>
+          <td>
+            <span class="badge"
+              [ngClass]="{
+                'bg-success': u.status === 'Active',
+                'bg-danger': u.status === 'Inactive'
+              }">{{ u.status }}</span>
+          </td>
+          <td class="text-center">
+            <button class="btn btn-warning btn-sm me-2 mx-1" (click)="enableUserEdit(u)">
+              <i class="fa-regular fa-pen-to-square mx-1"></i>
+            </button>
+            <button class="btn btn-danger btn-sm mx-1" (click)="deleteUser(u.id)">
+              <i class="fas fa-trash mx-1"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+  <!-- Edit User Form -->
+   <div *ngIf="selectedUser" class="card d-flex justify-content-center align-items-center mt-2 mb-3 w-100 border border-success rounded-4"  style="min-height: 80vh; max-height: 500px; background-color: #f0fdf4;">
+  <div  *ngIf="selectedUser" class="card bg-white  border border-success shadow-lg w-100" style="max-width: 800px;  ">
+  <h3 class="card-header bg-success text-white fw-bold  rounded-3 justify-content-between text-center">
+    <i class="bi bi-person-lines-fill me-2 mx-2"></i>Edit User Details
+  </h3>
+<div class="card-body">
+  <div class=" row g-4  border-success">
+    <!-- Name -->
+    <div class="col-md-6 border-bottom d-flex align-items-center">
+      <label class="form-label bo text-success fw-semibold m-4 mb-0"><strong>Name:</strong></label>
+      <div class="form-control-plaintext w-100 ps-2 text-dark">{{ selectedUser.name }}</div>
+    </div>
+
+    <!-- Email -->
+    <div class="col-md-6 border-bottom d-flex align-items-center">
+      <label class="form-label text-success fw-semibold m-4 mb-0"><strong>Email:</strong></label>
+      <div class="form-control-plaintext w-100 ps-2 text-dark">{{ selectedUser.email }}</div>
+    </div>
+
+    <!-- Status -->
+    <div class="col-md-6 border-bottom d-flex align-items-center">
+  <label class="form-label text-success fw-semibold m-4 mb-0"><strong>Status:</strong></label>
+  <div class="form-check form-switch w-50">
+    <input
+  *ngIf="selectedUser"
+  class="form-check-input border border-success-subtle shadow-sm"
+  type="checkbox"
+  role="switch"
+  id="statusSwitch"
+  [checked]="selectedUser.status === 'Active'"
+  (change)="onStatusChange($event)"
+/>
+
+    <label class="form-check-label ms-2" for="statusSwitch">
+      {{ selectedUser.status }}
+    </label>
+  </div>
+</div>
+
+    <!-- Average Rating -->
+   <!-- Average Rating -->
+<div class="col-md-6 border-bottom d-flex align-items-center">
+  <label class="form-label text-success fw-semibold m-4 mb-0"><strong>Rating:</strong></label>
+  <div class="w-50 ps-2">
+    <ng-container *ngFor="let star of stars; let i = index">
+      <i
+        class="bi"
+        [ngClass]="{
+          'bi-star-fill text-warning': selectedUser.averageRating >= i + 1,
+          'bi-star-half text-warning': selectedUser.averageRating >= i + 0.5 && selectedUser.averageRating < i + 1,
+          'bi-star text-warning': selectedUser.averageRating < i + 0.5
+        }"
+        (click)="setRating(i + 1)"
+        (mouseover)="hoverRating(i + 1)"
+        (mouseleave)="hoverRating(0)"
+        style="cursor: pointer; font-size: 1.5rem;">
+      </i>
+    </ng-container>
+    <small class="text-muted ms-2">({{ selectedUser.averageRating.toFixed(1) }})</small>
+  </div>
+</div>
+</div>
+
+  <!-- Action Buttons -->
+  <div class="d-flex justify-content-center  mt-5">
+    <button class="btn btn-danger px-4 shadow-sm mx-1" (click)="cancelUserEdit()">
+      <i class="bi bi-x-circle me-2 mx-1"></i>Cancel
+    </button>
+    <button class="btn btn-success px-4 shadow-sm mx-1" (click)="updateUserProfile()">
+      <i class="bi bi-save me-2 mx-1"></i>Save
+    </button>
+  </div>
+</div>
+</div>
+</div>

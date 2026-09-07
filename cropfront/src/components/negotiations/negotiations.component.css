@@ -1,0 +1,85 @@
+.bg-light-green {
+  background-color: #f0fdf4; /* soft green tint */
+}
+.full-bg{
+     min-height: 85vh
+}
+/* Grid layout for negotiations */
+.negotiation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* Individual negotiation card */
+.negotiation-card {
+  border: 2px solid #198754;
+  border-radius: 12px;
+  background-color: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.negotiation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Card body */
+.negotiation-card .card-body {
+  padding: 1.5rem;
+}
+
+/* Button icon styling */
+.btn i {
+  margin-right: 6px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.btn:hover i {
+  transform: scale(1.15);
+}
+
+/* Grid layout for history negotiations */
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* Individual history card */
+.history-card {
+  border: 2px solid #198754;
+  border-radius: 12px;
+  background-color: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.history-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Card body */
+.history-card .card-body {
+  padding: 1.5rem;
+}
+
+/* Status badge styling */
+.badge {
+  font-size: 0.85rem;
+  padding: 0.4em 0.6em;
+  border-radius: 6px;
+}
+
+/* Optional: color overrides for clarity */
+.bg-success {
+  background-color: #198754 !important;
+}
+.bg-danger {
+  background-color: #dc3545 !important;
+}
+.bg-secondary {
+  background-color: #6c757d !important;
+}

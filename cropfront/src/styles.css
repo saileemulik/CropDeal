@@ -1,0 +1,61 @@
+/* Global Snackbar Styles */
+.snackbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  padding: 12px 24px;
+  border-radius: 8px;
+  min-width: 300px;
+  max-width: 90vw;
+  text-align: center;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  opacity: 0.95;
+}
+
+/* 🟥 Error */
+.snackbar-error {
+  background-color: #e53935;
+}
+
+/* 🟩 Success */
+.snackbar-success {
+  background-color: #43a047;
+}
+
+/* 🟨 Warning */
+.snackbar-warning {
+  background-color: #fbc02d;
+  color: #000;
+}
+
+/* 🟦 Info */
+.snackbar-info {
+  background-color: #1e88e5;
+}
+
+/* Error boundary styles */
+.error-boundary {
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #f44336;
+  border-radius: 4px;
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.error-boundary h2 {
+  color: #c62828;
+  margin-top: 0;
+}
+
+.error-boundary pre {
+  background-color: #ffcdd2;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+}

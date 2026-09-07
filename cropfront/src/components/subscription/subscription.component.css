@@ -1,0 +1,80 @@
+/* Light green background for section */
+.bg-light-green {
+  background-color: #f0fdf4;
+}
+
+/* Grid layout for listings */
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+
+/* Individual listing card */
+.subscription-card {
+  border: 2px solid #198754;
+  border-radius: 12px;
+  background-color: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.subscription-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(25, 135, 84, 0.25);
+}
+
+/* Card body transition */
+.subscription-card .card-body {
+  padding: 1.5rem;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Listing title */
+.listing-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #198754;
+  margin-bottom: 0.5rem;
+}
+
+/* Listing text */
+.listing-text {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.listing-text i {
+  color: #198754;
+  margin-right: 4px;
+}
+
+/* Button styles */
+.btn {
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn i {
+  margin-right: 6px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.btn:hover i {
+  transform: scale(1.15);
+}
+
+/* Hide all cards except selected */
+.hide-card {
+  display: none !important;
+}
+
+/* Back button styling */
+.back-btn {
+  display: block;
+  margin: 1rem auto 0 auto;
+  text-align: center;
+}

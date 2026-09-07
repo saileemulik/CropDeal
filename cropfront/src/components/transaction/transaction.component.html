@@ -1,0 +1,268 @@
+<div *ngIf="activeSection==='transaction' && currentUserRole === UserRole.Admin">
+  <div class="container-fluid mt-4 ">
+
+    <!-- Transactions Table -->
+    <div *ngIf="!isTransactionEdit" class="card shadow-sm border-success bg-light-green">
+      <div class="card-header bg-success text-white rounded-top">
+        <h4 class="mb-0 text-center">All Transactions</h4>
+      </div>
+      <div class="card-body bg-light-green border-success rounded-4">
+        <table class="table bg-white shadow-sm  custom-table">
+          <thead class="table-success text-center">
+            <tr>
+              <th>Transaction ID</th>
+              <th>Dealer ID</th>
+              <th>Quantity</th>
+              <th>Total Price</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th>Updated At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody class="text-center align-middle">
+            <tr *ngFor="let txn of transactions">
+              <td>{{ txn.id }}</td>
+              <td>{{ txn.dealerId }}</td>
+              <td>{{ txn.quantity }}</td>
+              <td>₹{{ txn.totalPrice }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-success': txn.status === 'Completed',
+                    'bg-warning text-dark': txn.status === 'Pending',
+                    'bg-danger': txn.status === 'Cancelled'
+                  }">
+                  {{ txn.status }}
+                </span>
+              </td>
+              <td>{{ txn.createdAt | date:'short' }}</td>
+              <td>{{ txn.updatedAt | date:'short' }}</td>
+              <td>
+                <button class="btn btn-warning btn-sm shadow-sm" (click)="editTransaction(txn)">
+                  <i class="bi bi-pencil-square"></i> Edit
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Edit Transaction Section -->
+  <div class=" card container bg-light-green">
+      <div *ngIf="isTransactionEdit" class="card shadow-sm border border-success mt-4 ">
+  <div class="card-header bg-success text-white rounded-top ">
+    <h5 class="mb-0 text-center">✏️ Edit Transaction Status</h5>
+  </div>
+  <div class="card-body ">
+    <form (ngSubmit)="updateTransaction()" class="p-2">
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold text-success">Transaction ID</label>
+        <p class="form-control-plaintext text-dark">{{ editableTransaction?.id  }}</p>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold text-success">Dealer ID</label>
+        <p class="form-control-plaintext text-dark">{{ editableTransaction?.dealerId }}</p>
+      </div>
+
+      <div class="mb-3">
+        <label for="status" class="form-label fw-semibold text-success">Select Status</label>
+        <select
+          id="status"
+          class="form-select border-success shadow-sm"
+          [(ngModel)]="editableTransaction.status"
+          name="status"
+          required>
+          <option value="" disabled>Select Status</option>
+          <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="submit" class="btn btn-success px-4">
+          <i class="bi bi-check-circle me-1"></i> Update
+        </button>
+        <button type="button" class="btn btn-outline-secondary px-4" (click)="isTransactionEdit = false">
+          <i class="bi bi-x-circle me-1"></i> Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  </div>
+
+  </div>
+</div>
+
+
+<div *ngIf="activeSection === 'transaction' && currentUserRole === UserRole.Dealer" class="mt-4">
+  <div class="container-fluid">
+
+    <div *ngIf="!showForm" class="card shadow-sm border-success bg-light-green">
+      <div class="card-header bg-success text-white rounded-top">
+        <h4 class="mb-0 text-center">My Transactions</h4>
+      </div>
+      <div class="card-body bg-light-green border-success rounded-4">
+        <table class="table bg-white shadow-sm custom-table">
+          <thead class="table-success text-center">
+            <tr>
+              <th>Transaction ID</th>
+              <th>Crop ID</th>
+              <th>Quantity</th>
+              <th>Total Price</th>
+              <th>Status</th>
+              <th>Invoice</th>
+              <th>Rate Farmer</th>
+            </tr>
+          </thead>
+          <tbody class="text-center align-middle">
+            <tr *ngFor="let transaction of transactions">
+              <td>{{ transaction.id }}</td>
+              <td>{{ transaction.listingId }}</td>
+              <td>{{ transaction.quantity }}</td>
+              <td>₹{{ transaction.totalPrice }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-success': transaction.status === 'Completed',
+                    'bg-warning text-dark': transaction.status === 'Pending',
+                    'bg-danger': transaction.status === 'Cancelled'
+                  }">
+                  {{ transaction.status }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-primary btn-sm shadow-sm" (click)="downloadInvoice(transaction.id)">
+                  <i class="bi bi-download me-1"></i> Download
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-info btn-sm shadow-sm" (click)="startReview(transaction)">
+                  <i class="bi bi-star-fill me-1"></i> Review
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+ <div *ngIf="activeSection === 'rating' && currentUserRole == UserRole.Dealer">
+  <div *ngIf="isReviewFormVisible" class="container">
+    <div class="card border-success shadow-sm bg-light-green full-bg mt-3 mb-3">
+      <div class="card border-success shadow-sm bg-light-green full-bg m-5 ">
+        <div class="card-header text-center bg-success text-white">
+          <h5 class="mb-0">Add Review</h5>
+        </div>
+
+        <!-- Add card-body with bg-white -->
+        <div class="card-body bg-white p-5">
+          <form (ngSubmit)="submitReview()" #addressForm="ngForm">
+            <div class="mb-3">
+              <label class="form-label fw-semibold"><strong class="text-success">Transaction ID: </strong></label> {{ rating.transactionId }}
+              <!-- <p class="form-control-plaintext">{{ rating.transactionId }}</p> -->
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold"><strong class="text-success">Farmer ID: </strong></label> {{ rating.farmerId }}
+              <!-- <p class="form-control-plaintext">{{ rating.farmerId }}</p> -->
+            </div>
+
+            <div class="mb-3">
+               <div class="star-input">
+              <label class="form-label fw-semibold"> <strong class="text-success">Rating:  </strong></label>
+
+                <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index" class="mx-1">
+                  <i class="bi mx-1" [ngClass]="{
+                    'bi-star-fill': rating.rating >= star,
+                    'bi-star-half': rating.rating >= star - 0.5 && rating.rating < star,
+                    'bi-star': rating.rating < star - 0.5
+                  }"
+                  (click)="setStarRating(star)"
+                  (mousemove)="setStarRatingHover($event, star)"
+                  (mouseleave)="clearStarRatingHover()"
+                  style="cursor: pointer;"></i>
+                </ng-container>
+                <span class="text-muted ms-2">({{ rating.rating }})</span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="comment" class="form-label fw-semibold"><strong class="text-success">Comment:</strong></label>
+              <input type="text" id="comment" class="form-control" [(ngModel)]="rating.comment" name="comment" required>
+            </div>
+
+           <div class="text-center">
+             <button type="submit" class="btn btn-success me-2 px-4 fw-semibold mx-1">Add</button>
+            <button type="button" class="btn btn-danger fw-semibold mx-1" (click)="isReviewFormVisible = false">Cancel</button>
+           </div>
+          </form>
+        </div>
+        <!-- end card-body -->
+
+      </div>
+    </div>
+  </div>
+</div>
+ <!-- Transactions Section -->
+  <div *ngIf="activeSection === 'transaction' && currentUserRole==UserRole.Farmer" class="mt-4">
+     <div *ngIf="transactions.length > 0; else noTransactions">
+
+    <div class="card shadow-sm border-success bg-light-green">
+    <!-- List of Previous Transactions -->
+    <div class="card-header bg-success text-white rounded-top">
+        <h4 class="mb-0 text-center">My Transactions</h4>
+      </div>
+      <div class="card-body bg-light-green border-success rounded-4">
+    <table class="table bg-white shadow-sm custom-table">
+      <thead class="table-success text-center">
+        <tr>
+          <th>Transaction ID</th>
+          <th>Crop ID</th>
+          <th>Quantity</th>
+          <th>Total Price</th>
+          <th>Payment Status</th>
+          <th>Invoice</th>
+
+        </tr>
+      </thead>
+      <tbody class="text-center align-middle">
+        <tr *ngFor="let transaction of transactions">
+          <td>{{ transaction.id }}</td>
+          <td>{{ transaction.listingId }}</td>
+          <td>{{ transaction.quantity }}</td>
+          <td>{{ transaction.totalPrice }}</td>
+          <td>{{ transaction.status }}</td>
+          <td>
+            <button class="btn btn-primary btn-sm" (click)="downloadInvoice(transaction.id)">
+              Download
+            </button>
+          </td>
+          <!-- <td>
+            <button class="btn btn-primary btn-sm" (click)="startReview(transaction)">
+              Review
+            </button>
+          </td> -->
+        </tr>
+      </tbody>
+    </table>
+</div>
+</div>
+</div>
+    <ng-template #noTransactions>
+      <div class="card-header bg-success text-white rounded-top">
+        <h4 class="mb-0 text-center">My Transactions</h4>
+      </div>
+      <div class="alert alert-info text-center" role="alert">
+        No transactions found.
+      </div>
+    </ng-template>
+  </div>

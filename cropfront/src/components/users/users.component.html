@@ -1,0 +1,136 @@
+<div *ngIf="activeSection === 'users'" class="card h-100 shadow p-4 mb-4 border border-success rounded-4" style="background-color: #f0fdf4;">
+  <!-- NavBar with bottom border only and active/hover effect -->
+  <ul class="nav nav-pills border-bottom border-success mb-4 pb-2 justify-content-center gap-3">
+    <li class="nav-item">
+      <a class="nav-link px-3 py-1 rounded-3" 
+         [ngClass]="{'active-link': isActive('/users')}" 
+         [routerLink]="'/users'">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link px-3 py-1 rounded-3" 
+         [ngClass]="{'active-link': isActive('/address')}" 
+         [routerLink]="'/address'">Address</a>
+    </li>
+    <li class="nav-item" *ngIf="currentUserRole !== UserRole.Admin">
+      <a class="nav-link px-3 py-1 rounded-3 fw-semibold" 
+         [ngClass]="{'active-link': isActive('/bank')}" 
+         [routerLink]="'/bank'">Bank</a>
+    </li>
+  </ul>
+
+  <!-- Profile Display Section -->
+   
+<h2 class="text-center fw-bold display-5 mb-5" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2c7a2c; background-color: #f0fdf4;">
+  My Profile
+</h2>
+
+<div class="d-flex justify-content-center px-3" >
+  <div class="card shadow-lg p-5 w-100" style="max-width: 800px; border-radius: 1.5rem; font-family: 'Segoe UI', sans-serif; border: 2px solid #2c7a2c; ">
+    
+    <!-- HEADER -->
+  <div class="d-flex align-items-start justify-content-between mb-5 border-bottom pb-3">
+  <div>
+    <h3 class="mb-1" style="color: #2c7a2c; font-weight: 700; font-size: 2rem;">{{ user.name }}</h3>
+    <small class="text-success fw-semibold d-block mb-2" style="font-size: 1.1rem;">{{ user.email }}</small>
+    <span class="badge bg-success text-uppercase px-4 py-2 fw-semibold" style="letter-spacing: 0.05em; font-size: 0.9rem;">
+      {{ user.role }}
+    </span>
+  </div>
+  <div class="d-flex align-items-start">
+    <button
+      class="btn fw-semibold "
+      [ngClass]="isEditing ? 'btn-danger' : 'btn-warning'"
+      style="min-width: 120px; font-size: 1rem;"
+      (click)="isEditing ? cancelEdit() : enableEdit()"
+    >
+      <i class="bi" [ngClass]="isEditing ? 'bi-x-lg mx-1' : 'bi-pencil-fill mx-1'"></i>
+      {{ isEditing ? 'Cancel' : 'Edit' }}
+    </button>
+  </div>
+</div>
+
+    <!-- VIEW MODE -->
+    <div *ngIf="!isEditing" class="table-responsive">
+      <table class="table table-borderless fs-5 text-dark" style="min-width: 100%;">
+        <tbody>
+          <tr>
+            <th class="text-success fw-semibold" style="width: 35%; min-width: 160px; border-top: none; letter-spacing: 0.03em;">📱 Phone Number</th>
+            <td class="border-top-0">{{ user.phoneNumber || '-' }}</td>
+          </tr>
+          <tr>
+            <th class="text-success fw-semibold" style="letter-spacing: 0.03em;">🏙️ City</th>
+            <td>{{ user.location || '-' }}</td>
+          </tr>
+          <tr  *ngIf="currentUserRole !== UserRole.Admin">
+            <th class="text-success fw-semibold" style="letter-spacing: 0.03em;">⚙️ Account Status</th>
+            <td>
+              <span [ngClass]="{
+                'badge bg-success text-light px-3 py-2': user.status === 'Active',
+                'badge bg-danger text-light px-3 py-2': user.status === 'Inactive',
+                'badge bg-warning text-dark px-3 py-2': user.status !== 'Active' && user.status !== 'Inactive'
+              }" style="font-size: 1rem;"><strong>{{ user.status }}</strong></span>
+            </td>
+          </tr>
+          <tr *ngIf="currentUserRole !== UserRole.Admin">
+            <th class="text-success fw-semibold" style="letter-spacing: 0.03em;">⭐ Average Rating</th>
+            <td>
+              <div class="d-flex align-items-center">
+                <ng-container *ngIf="user.averageRating as rating">
+                  <ng-container *ngFor="let star of getFullStars(rating)">
+                    <i class="bi bi-star-fill text-warning fs-5 me-1"></i>
+                  </ng-container>
+                  <ng-container *ngIf="hasHalfStar(rating)">
+                    <i class="bi bi-star-half text-warning fs-5 me-1"></i>
+                  </ng-container>
+                  <ng-container *ngFor="let star of getEmptyStars(rating)">
+                    <i class="bi bi-star text-warning fs-5 me-1"></i>
+                  </ng-container>
+                  <span class="ms-2 text-secondary fw-semibold mx-1" style="font-size: 1rem;">({{ rating | number:'1.1-2' }})</span>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- EDIT MODE -->
+<div *ngIf="isEditing" class="edit-section mt-3">
+  <form (ngSubmit)="updateProfile()" class="row gx-3 gy-3">
+    <div class="col-md-6">
+      <label class="form-label text-success fw-semibold" for="nameInput"><strong>Name</strong></label>
+      <input id="nameInput" type="text" class="form-control border-success shadow-sm mb-4" [(ngModel)]="user.name" name="name" placeholder="Enter your name" required />
+    </div>
+    
+    <div class="col-md-6">
+      <label class="form-label text-success fw-semibold" for="emailInput"><strong>Email</strong></label>
+      <input id="emailInput" type="email" class="form-control border-success shadow-sm" [(ngModel)]="user.email" name="email" placeholder="Enter your email" required />
+    </div>
+    
+    <div class="col-md-6">
+      <label class="form-label text-success fw-semibold" for="phoneInput"><strong>Phone Number</strong></label>
+      <input id="phoneInput" type="tel" class="form-control border-success shadow-sm" [(ngModel)]="user.phoneNumber" name="phoneNumber" placeholder="Enter your phone number" />
+    </div>
+    
+    <div class="col-md-6">
+      <label class="form-label text-success fw-bold" for="locationInput"><strong>City</strong></label>
+      <input id="locationInput" type="text" class="form-control border-success shadow-sm" [(ngModel)]="user.location" name="location" placeholder="Enter your city" />
+    </div>
+
+    <div class="col-12 d-flex justify-content-center gap-2 mt-3">
+      <button type="submit" class="btn btn-success px-4 fw-semibold shadow-sm">
+        <i class="bi bi-check-lg me-1"></i> Save
+      </button>
+      <!-- <button type="button" (click)="cancelEdit()" class="btn btn-outline-danger px-4 fw-semibold shadow-sm">
+        <i class="bi bi-x-lg me-1"></i> Cancel
+      </button> -->
+    </div>
+  </form>
+</div>
+
+
+  </div>
+</div>
+
+
+</div>

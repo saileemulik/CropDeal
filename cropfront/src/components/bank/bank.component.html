@@ -1,0 +1,123 @@
+<div *ngIf="activeSection === 'bank'" class="card h-100 shadow p-4 mb-4 border border-success rounded-4" style="background-color: #f0fdf4;">
+  <!-- NavBar with bottom border only and active/hover effect -->
+ <ul class="nav nav-pills border-bottom border-success mb-4 pb-2 justify-content-center gap-3">
+    <li class="nav-item">
+      <a class="nav-link px-3 py-1 rounded-3" 
+         [ngClass]="{'active-link': isActive('/users')}" 
+         [routerLink]="'/users'">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link px-3 py-1 rounded-3" 
+         [ngClass]="{'active-link': isActive('/address')}" 
+         [routerLink]="'/address'">Address</a>
+    </li>
+    <li class="nav-item" *ngIf="currentUserRole !== UserRole.Admin">
+      <a class="nav-link px-3 py-1 rounded-3 fw-semibold" 
+         [ngClass]="{'active-link': isActive('/bank')}" 
+         [routerLink]="'/bank'">Bank</a>
+    </li>
+  </ul>
+
+
+  <!-- Bank Details Display Section -->
+  <h2 class="text-center fw-bold display-5 mb-5" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2c7a2c;">
+  My Bank Details
+</h2>
+
+<div class="d-flex justify-content-center px-3">
+  <div class="card shadow-lg p-5 w-100 position-relative" style="max-width: 800px; border-radius: 1.5rem; font-family: 'Segoe UI', sans-serif; border: 2px solid #2c7a2c; ">
+
+    <!-- Top-Right Edit/Cancel Toggle Button -->
+    <div class="d-flex align-content-lg-end position-absolute" style="top: 20px; right: 20px;">
+      <button
+        class="btn ms-auto fw-semibold"
+        [ngClass]="isBankFormVisible ? 'btn-danger' : 'btn-warning'"
+        style="min-width: 100px; font-size: 1rem;"
+        (click)="isBankFormVisible = !isBankFormVisible; isBankEdit = !isBankEdit"
+      >
+        <i class="bi" [ngClass]="isBankFormVisible ? 'bi-x-lg mx-1' : 'bi-pencil-fill mx-1'"></i>
+        {{ isBankFormVisible ? 'Cancel' : 'Edit' }}
+      </button>
+    </div>
+
+    <!-- View Mode -->
+    <div *ngIf="!isBankFormVisible &&  bank?.accounts?.accountNumber" class="table-responsive mt-4">
+      <table class="table table-borderless fs-5 text-dark">
+        <tbody>
+          <tr>
+            <th class="text-success fw-semibold" style="width: 40%;">💳 Account Number</th>
+            <td>{{ bank.accounts?.accountNumber || '-' }}</td>
+          </tr>
+          <tr>
+            <th class="text-success fw-semibold">🏦 IFSC Code</th>
+            <td>{{ bank.accounts?.ifscCode || '-' }}</td>
+          </tr>
+          <tr>
+            <th class="text-success fw-semibold">🏛️ Bank Name</th>
+            <td>{{ bank.accounts?.bankName || '-' }}</td>
+          </tr>
+          <tr>
+            <th class="text-success fw-semibold">🏬 Branch Name</th>
+            <td>{{ bank.accounts?.branchName || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Add/Edit Form -->
+    <div *ngIf="isBankFormVisible" class="mt-4">
+      <form (ngSubmit)="isBankEdit ? updateBankDetails() : addBankDetails()" class="row gx-4 gy-4">
+        <div class="col-md-6 d-flex flex-column">
+          <label class="form-label fw-semibold text-success mb-2"><strong>Account Number</strong></label>
+          <input type="text" class="form-control  border-success shadow-sm mb-4"
+            [(ngModel)]="bank.accounts.accountNumber" name="accountNumber"
+            placeholder="Enter account number" required />
+        </div>
+
+        <div class="col-md-6 d-flex flex-column">
+          <label class="form-label fw-semibold text-success mb-2"><strong>IFSC Code</strong></label>
+          <input type="text" class="form-control  border-success shadow-sm"
+            [(ngModel)]="bank.accounts.ifscCode" name="ifscCode"
+            placeholder="Enter IFSC code" required />
+        </div>
+
+        <div class="col-md-6 d-flex flex-column">
+          <label class="form-label fw-semibold text-success mb-2"><strong>Bank Name</strong></label>
+          <input type="text" class="form-control border-success shadow-sm"
+            [(ngModel)]="bank.accounts.bankName" name="bankName"
+            placeholder="Enter bank name" required />
+        </div>
+
+        <div class="col-md-6 d-flex flex-column">
+          <label class="form-label fw-semibold text-success mb-2"><strong>Branch Name</strong></label>
+          <input type="text" class="form-control  border-success shadow-sm"
+            [(ngModel)]="bank.accounts.branchName" name="branchName"
+            placeholder="Enter branch name" required />
+        </div>
+
+        <div class="col-12 d-flex justify-content-center gap-3 mt-4">
+          <button type="submit" class="btn btn-success  px-5 fw-semibold shadow-sm">
+            <i class="bi bi-check-lg me-2 mx-1"></i> {{ isBankEdit ? 'Update' : 'Add' }}
+          </button>
+          <!-- <button type="button" (click)="isBankFormVisible = false; isBankEdit = false"
+            class="btn btn-outline-danger btn-lg px-5 fw-semibold shadow-sm">
+            <i class="bi bi-x-lg me-2"></i> Cancel
+          </button> -->
+        </div>
+      </form>
+    </div>
+
+    <!-- Add Bank Button when no details exist -->
+    <div *ngIf="!isBankFormVisible && !bank?.accounts?.accountNumber" class="text-center mt-4">
+  <button class="btn btn-outline-primary fw-semibold px-4 py-2"
+          (click)="isBankFormVisible = true; isBankEdit = false"
+          style="font-size: 1rem;">
+    <i class="bi bi-plus-circle me-2"></i> Add Bank Details
+  </button>
+</div>
+
+
+  </div>
+</div>
+
+</div>

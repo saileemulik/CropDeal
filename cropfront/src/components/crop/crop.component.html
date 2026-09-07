@@ -1,0 +1,263 @@
+<div *ngIf="activeSection=='crop' && currentUserRole==UserRole.Admin">
+   <div class="d-flex justify-content-center m-3">
+    <button
+      class="btn mx-2 "
+      [ngClass]="activeView === 'crops' ? 'btn-success' : 'btn-outline-success'"
+      (click)="showCrops()"
+    >
+      Crops
+    </button>
+    <button
+      class="btn mx-2"
+      [ngClass]="activeView === 'requests' ? 'btn-success' : 'btn-outline-success'"
+      (click)="showRequests()"
+    >
+      Crop Requests
+    </button>
+  </div>
+    <ng-container *ngIf="activeView === 'crops'" >
+   <div *ngIf="isFormVisble"
+  class="card border-success shadow-sm bg-light-green full-bg  m-5 p-4  justify-content-center align-items-lg-stretch">
+  <div class="card shadow-lg rounded-4 p-4 border-success  m-5  " style="max-width: 1000px; max-height:700px; ">
+
+    <!-- Header with close button -->
+    <div
+      class="card-header text-center bg-success text-white rounded-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-center">
+        🌾 {{ editingCropId ? 'Edit Crop' : 'Add New Crop' }}
+      </h5>
+      <button class="btn-close btn-close-white" aria-label="Close" (click)="toggleAddForm()"></button>
+    </div>
+
+    <!-- Form Body -->
+    <div class="card-body m-5">
+      <div class="mb-4">
+        <label for="cropName" class="form-label text-success fw-semibold fs-6"><strong>Crop Name</strong></label>
+        <input id="cropName" type="text" class="form-control border-success-subtle shadow-sm rounded-3"
+          [(ngModel)]="crop.name" placeholder="Enter crop name">
+      </div>
+
+      <div class="mb-4">
+        <label for="cropType" class="form-label text-success fw-semibold fs-6  mx-1"><strong>Crop Type</strong></label>
+        <select [(ngModel)]="cropType" class="form-select mx-1">
+          <option value="" disabled>Select crop type</option>
+          <option *ngFor="let type of cropTypeOptions" [value]="type">{{ type }}</option>
+        </select>
+
+      </div>
+
+      <div class="d-flex justify-content-center gap-2">
+        <button class="btn btn-danger shadow-sm px-4 mx-1" (click)="cancelEdit()">
+          <i class="bi bi-x-circle me-1 mx-1"></i> Cancel
+        </button>
+
+        <button class="btn btn-success shadow-sm px-4 mx-1" *ngIf="!editingCropId" (click)="addCrop()">
+          <i class="bi bi-plus-circle me-1 mx-1"></i> Add Crop
+        </button>
+
+        <button class="btn btn-warning shadow-sm px-4 mx-1" *ngIf="editingCropId" (click)="updateCrop()">
+          <i class="bi bi-save me-1 mx-1"></i> Update Crop
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div *ngIf="!isFormVisble" class="card border-success shadow-sm bg-light-green mt-3 mb-3">
+  <div class="card-header text-center bg-success text-white">
+    <h5 class="mb-0">All Crops</h5>
+  </div>
+  <div class="card-body full-bg p-4">
+    <div *ngIf="crops.length === 0" class="text-muted text-center py-3">
+      No crops found. Click "Add Crop" to get started.
+    </div>
+    <div class="card-body ">
+      <button class="btn btn-primary px-4 py-2 shadow-sm" (click)="toggleAddForm()">
+        <i class="bi" [ngClass]="isFormVisble ? 'bi-x-circle' : 'bi-plus-circle'"></i>
+        {{ isFormVisble ? 'Cancel' : 'Add Crop' }}
+      </button>
+    </div>
+
+    <!-- Responsive card grid -->
+    <div class="row ">
+      <div *ngFor="let c of crops" class="col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card h-100 shadow crop-card border-success">
+          <div class="card-body d-flex flex-column justify-content-between">
+            <div>
+              <h6 class="card-title text-dark mb-1">{{ c.name }}</h6>
+            <p class="card-subtitle text-muted small">
+  {{ c.customType ? c.customType : c.type }}
+</p>
+            </div>
+
+            <div class="text-end mt-3">
+              <button class="btn btn-sm btn-outline-warning mx-1 " (click)="editCrop(c)">
+                <i class="bi bi-pencil-square mx-1"></i> Edit
+              </button>
+              <button class="btn btn-outline-danger btn-sm shadow-sm mx-1" (click)="deleteCrop(c.id)">
+                <i class="bi bi-trash mx-1"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+  </ng-container>
+ <ng-container *ngIf="activeView === 'requests'" class="mt-5" style="max-width: 1000px; max-height:700px; ">
+  <div class="card border-success shadow-sm bg-light-green full-bg mt-3 mb-3" >
+    <div class="card-header text-center bg-success text-white">
+    <h5 class="mb-0">Pending Crop Requests</h5>
+</div>
+    <div *ngIf="requests.length === 0" class="text-muted text-center p-3">
+      No pending crop requests found.
+    </div>
+
+    <div class="row g-3 m-3">
+      <div
+        *ngFor="let req of requests"
+        class="col-12 col-md-4"
+      >
+        <div class="card shadow-sm bg-white h-100 border-success rounded-4">
+          <div class="card-body d-flex flex-column">
+            <h6 class="card-title text-success fw-bold">
+              Crop Name: <span class="text-dark">{{ req.cropName }}</span>
+            </h6>
+            <p class="card-text mb-1">
+              <strong class="text-success">Description:</strong> {{ req.description }}
+            </p>
+            <p class="card-text mb-2">
+              <strong class="text-success">Farmer's Crop Type:</strong> {{ req.type }}
+            </p>
+            <p class="text-muted small mb-3">
+              Requested by: {{ req.farmerName || req.farmerId }}
+            </p>
+
+            <div class="d-flex gap-2 align-items-center mt-auto">
+              <select
+                [(ngModel)]="requestDecision[req.id]"
+                class="form-select form-select-sm w-auto border-s border-success text-center"
+              >
+                <option value="" disabled>Select decision</option>
+                <option *ngFor="let status of requestStatusOptions" [value]="status">
+                  {{ status }}
+                </option>
+              </select>
+
+              <input
+                type="text"
+                class="form-control form-control-sm w-auto mx-1 border-success"
+                placeholder="{{ req.type }}"
+                [(ngModel)]="requestCropType[req.id]"
+              />
+
+              <button
+                class="btn btn-sm btn-success"
+                [disabled]="!isValidRequest(req.id)"
+                (click)="handleRequestSubmit(req.id)"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+
+</div>
+<div *ngIf="activeSection=='crop' && currentUserRole==UserRole.Farmer">
+  <div class="d-flex justify-content-center m-3 p-3">
+    <button
+      class="btn mx-2"
+      [ngClass]="activeView === 'crops' ? 'btn-success' : 'btn-outline-success'"
+      (click)="submitRequestView()"
+    >
+      Request For New Crops
+    </button>
+    <button
+      class="btn mx-2"
+      [ngClass]="activeView === 'requests' ? 'btn-success' : 'btn-outline-success'"
+      (click)="getStatusOfRequestedCrops()"
+    >
+      Requested Crop Status
+    </button>
+  </div>
+
+  <ng-container *ngIf="activeView === 'crops' && requestFormVisble" class="card shadow  mx-auto mt-4 bg-light-green border-success">
+    <div class="card shadow p-4  mx-auto mt-4 bg-light-green border-success" style="max-width: 1000px;">
+      <div class="card-header text-center bg-success text-white">
+    <h5 class="mb-0">Submit Crop Requests</h5>
+      </div>
+     <div class="card-body bg-white border-success p-4">
+       <div class="mb-3">
+        <label for="cropName" class="form-label fw-semibold"><strong class="text-success">Crop Name:</strong></label>
+        <input id="cropName" class="form-control border-success" [(ngModel)]="cropName" placeholder="Enter crop name" />
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label fw-semibold"><strong class="text-success">Description:</strong></label>
+        <textarea id="description" class="form-control border-success" [(ngModel)]="description" placeholder="Enter description"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="type" class="form-label fw-semibold"><strong class="text-success">Crop Type:</strong></label>
+        <input
+          id="type"
+          name="type"
+          type="text"
+          class="form-control border-success"
+          [(ngModel)]="type"
+          placeholder="Enter crop type (e.g., Basmati, Quinoa, etc.)"
+        />
+      </div>
+
+      <button class="btn btn-success w-100 fw-semibold" (click)="submitRequest()">
+        <i class="bi bi-send me-1"></i> Submit Request
+      </button>
+     </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="activeView=='requests' && !requestFormVisble">
+    <div class="card border-success shadow-sm bg-light-green mt-3 mb-4 p-3" style="max-width: 900px; margin: auto;">
+      <h5 class="card-header bg-success text-white text-center mb-4">Crop Requests Status</h5>
+
+      <div class="text-center mb-3">
+        <button class="btn btn-outline-primary mx-2 fw-semibold"
+          [ngClass]="showAll ? 'btn-primary' : ''"
+          (click)="toggleRequestView(true)">
+          Show All Requests
+        </button>
+        <button class="btn btn-outline-warning mx-2 fw-semibold"
+          [ngClass]="!showAll ? 'btn-warning' : ''"
+          (click)="toggleRequestView(false)">
+          Show Only Pending
+        </button>
+      </div>
+
+      <div *ngIf="requests.length === 0" class="text-muted text-center p-3">
+        No pending crop requests found.
+      </div>
+
+      <div *ngFor="let req of requests" class="card mb-3 border-info shadow-sm">
+        <div class="card-body bg-white">
+          <h6 class="card-title text-success fw-bold">{{ req.cropName }}</h6>
+          <p class="card-text">{{ req.description }}</p>
+          <p class="card-text"><strong>Farmer's Crop Type:</strong> {{ req.type }}</p>
+          <p class="card-text"><strong>Status:</strong> {{ req.status }}</p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

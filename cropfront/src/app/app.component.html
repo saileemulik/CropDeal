@@ -1,0 +1,213 @@
+<div class="main-wrapper d-flex flex-column min-vh-100">
+<header *ngIf="!isLoggedIn" class="navbar navbar-expand-lg   text-white bg-success shadow-sm px-4 py-2 sticky-top">
+  <div class="container-fluid">
+    <!-- Branding -->
+    <img src="assets/download.jpg" alt="CropDeal Logo" width="35" height="35" class="d-inline-block align-text-top rounded-circle mx-1" />
+  <span>CropDeal</span>
+
+    <!-- Toggler -->
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <button class="btn btn-success d-md-none position-fixed top-0 start-0 m-2 z-3" >
+  <i class="fas fa-bars"></i>
+</button>
+
+    <!-- Navbar Links -->
+     
+    <div *ngIf="!hideNavbar" class="collapse navbar-collapse justify-content-end" id="navbarContent">
+      <ul class="navbar-nav d-flex align-items-center flex-row gap-2">
+        <li class="nav-item">
+          <a class="btn btn-outline-light btn-sm  mx-1" [routerLink]="'/home'">Home</a>
+        </li>
+        <li  class="nav-item">
+          <a class="btn btn-outline-light btn-sm  mx-1" [routerLink]="'/login'">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-light btn-sm text-success fw-semibold  mx-1" [routerLink]="'/signup'">Sign Up</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+<div  *ngIf="isLoggedIn"  class="d-flex flex-grow-1" style="min-height: 0;">
+
+<div class="sidebar d-flex flex-column bg-white text-dark shadow p-2"
+     style="height: 100vh; width: 250px; position: fixed; border-right: 3px solid #239f44;">
+
+  <div
+     class="d-flex align-items-center mb-3 p-2 bg-success text-white text-decoration-none sidebar-link active">
+    <img src="assets/download.jpg" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;" />
+    <span class="fs-4 fw-bold">CropDeal</span>
+  </div>
+
+
+
+
+  <!-- Farmer Menu -->
+  <ng-container *ngIf="currentUserRole === UserRole.Farmer">
+    <a routerLink="/farmerdashboard"
+       routerLinkActive="active-link"
+       (click)="setActiveSection('farmerdashboard')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'farmerdashboard'}">
+      <i class="fas fa-tractor me-2 mx-1"></i>Farmer Dashboard
+    </a>
+    <a routerLink="/users"
+       (click)="setActiveSection('users')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'users'}">
+      <i class="fas fa-user-shield me-2 mx-1"></i>My Profile
+    </a>
+     <a routerLink="/crop"
+       (click)="setActiveSection('crop')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'crop'}">
+      <i class="fas fa-regular fa-leaf me-2 mx-1"></i>Crops
+    </a>
+    <a routerLink="/listings"
+       routerLinkActive="active-link"
+       (click)="setActiveSection('listing')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'listing'}">
+      <i class="fas fa-regular fa-list-ul me-2 mx-1"></i>My Listings
+    </a>
+    <a routerLink="/subscription"
+       (click)="setActiveSection('subscription')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'subscription'}">
+      <i class="fas fa-bell me-2 mx-1"></i>Subscriptions
+    </a>
+     <a routerLink="/transaction"
+       (click)="setActiveSection('transaction')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'transaction'}">
+       <i class="fas fa-regular fa-money-bill-transfer me-2 mx-1"></i>Transaction
+    </a>
+     <a routerLink="/rating"
+       (click)="setActiveSection('rating')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'rating'}">
+       <i class="fas fa-regular fa-ranking-star me-2 mx-1"></i>Ratings
+    </a>
+    
+  </ng-container>
+
+  <!-- Dealer Menu -->
+  <ng-container *ngIf="currentUserRole === UserRole.Dealer">
+    <a routerLink="/dealerdashboard"
+       (click)="setActiveSection('dealerdashboard')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'dealerdashboard'}">
+      <i class="fas fa-briefcase me-2 mx-1"></i>Dealer Dashboard
+    </a>
+    <a routerLink="/users"
+       (click)="setActiveSection('users')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'users'}">
+       <i class="fa-regular fa-circle-user me-2 mx-1"></i>My Profile
+    </a>
+     <a routerLink="/listings"
+       (click)="setActiveSection('listing')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'listing'}">
+       <i class="fas fa-regular fa-list-ul me-2 mx-1"></i>Crop Listings
+    </a>
+    <a routerLink="/subscription"
+       (click)="setActiveSection('subscription')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'subscription'}">
+      <i class="fas fa-bell me-2 mx-1"></i>Subscriptions
+    </a>
+  
+     <a routerLink="/transaction"
+       (click)="setActiveSection('transaction')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'transaction'}">
+       <i class="fas fa-regular fa-money-bill-transfer me-2 mx-1"></i>Transaction
+    </a>
+    
+     <a routerLink="/rating"
+       (click)="setActiveSection('rating')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'rating'}">
+       <i class="fas fa-regular fa-ranking-star me-2 mx-1"></i>Ratings
+    </a>
+    
+  </ng-container>
+
+  <!-- Admin Menu -->
+  <ng-container *ngIf="currentUserRole === UserRole.Admin">
+    <a routerLink="/admindashboard"
+       (click)="setActiveSection('admindashboard')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'admindashboard'}">
+      <i class="fas fa-briefcase me-2 mx-1"></i>Admin Dashboard
+    </a>
+    <a routerLink="/users"
+       (click)="setActiveSection('users')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'users'}">
+      <i class="fa-regular fa-circle-user me-2 mx-1"></i>My Profile
+    </a>
+    <a routerLink="/manageuser"
+       (click)="setActiveSection('manageuser')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'manageuser'}">
+      <i class="fas fa-users me-2 mx-1"></i>Manage Users
+    </a>
+     <a routerLink="/crop"
+       (click)="setActiveSection('crop')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'crop'}">
+      <i class="fas fa-regular fa-leaf me-2 mx-1"></i>Crops
+    </a>
+     <a routerLink="/listings"
+       (click)="setActiveSection('listing')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'listing'}">
+     <i class="fas fa-regular fa-list-ul me-2 mx-1"></i>Crop Listings
+    </a>
+     <a routerLink="/transaction"
+       (click)="setActiveSection('transaction')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'transaction'}">
+     <i class="fas fa-regular fa-money-bill-transfer me-2 mx-1"></i>Transaction
+    </a>
+  
+     <a routerLink="/rating"
+       (click)="setActiveSection('rating')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'rating'}">
+     <i class="fas fa-regular fa-ranking-star me-2 mx-1"></i>Ratings
+    </a>
+     <a routerLink="/report"
+       (click)="setActiveSection('report')"
+       class="nav-link text-success mb-2"
+       [ngClass]="{'active-link': activeSection === 'report'}">
+      <i class="fas fa-regular fa-clipboard-list me-2 mx-1"></i>Report
+    </a>
+  </ng-container>
+  <div class="mt-auto">
+      <button class="btn btn-outline-success w-100 fw-semibold logout-hover m-0 p-2" (click)="logout()">
+        <i class="fas fa-sign-out-alt me-2 mx-1"></i> Logout
+      </button>
+    </div>
+</div>
+ <div class="content-wrapper flex-grow-1 p-3 " >
+    <router-outlet></router-outlet>
+  </div>
+
+
+</div>
+<router-outlet *ngIf="!isLoggedIn"></router-outlet>
+
+   <footer *ngIf="!isLoggedIn" class=" text-white bg-success text-center   shadow-sm  ">
+    &copy; 2025 CropDeal | Made with ❤️ for Farmers & Dealers. All rights reserved.
+  </footer>
+</div>
+
+<!-- Chat Component -->
+<app-chat></app-chat>
+

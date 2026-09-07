@@ -1,0 +1,40 @@
+<div class="container py-5">
+  <div class="text-center mb-4">
+    <h2 class="text-success fw-bold">Welcome to the Dealer Dashboard</h2>
+    <p class="lead text-muted">Empowering you to connect with farmers and manage your crop purchases efficiently.</p>
+  </div>
+
+  <div class="row text-center mb-4">
+    <div class="col-md-4">
+      <div class="card p-3 bg-light">
+        <h5>Total Subscriptions</h5>
+        <p class="fs-4">{{ stats?.totalSubscriptions }}</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 bg-light">
+        <h5>Total Negotiations</h5>
+        <p class="fs-4">{{ stats?.totalNegotiations }}</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 bg-light">
+        <h5>Total Transactions</h5>
+        <p class="fs-4">{{ stats?.totalTransactions }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
+      <div class="card shadow-sm p-3">
+        <h5 class="text-center">Monthly Subscriptions</h5>
+       <canvas baseChart
+            [type]="barChartType"
+            [data]="barChartData"
+            [options]="barChartOptions">
+    </canvas>
+      </div>
+    </div>
+  </div>
+</div>

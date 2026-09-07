@@ -1,0 +1,54 @@
+<div class="container py-4">
+  <h2 class="text-success mb-4">🌾 Farmer Dashboard</h2>
+
+  <!-- Summary Cards -->
+  <div class="row text-center mb-4" *ngIf="stats">
+    <div class="col-md-4 mb-3">
+      <div class="card shadow border-success">
+        <div class="card-body">
+          <h5>Total Listings</h5>
+          <p class="fs-4">{{ stats.totalListings }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card shadow border-success">
+        <div class="card-body">
+          <h5>Total Transactions</h5>
+          <p class="fs-4">{{ stats.totalTransactions }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card shadow border-success">
+        <div class="card-body">
+          <h5>Negotiations</h5>
+          <p class="fs-4">{{ stats.totalNegotiations }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm mb-4">
+        <h5>📊 Listings Per Month</h5>
+        <canvas baseChart 
+                [data]="{ labels: barLabels, datasets: [{ data: barData, label: 'Listings', backgroundColor: '#198754' }] }"
+                [type]="barChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm mb-4">
+        <h5>🥗 Crop Type Distribution</h5>
+        <canvas baseChart 
+                [data]="{ labels: pieLabels, datasets: [{ data: pieData, backgroundColor: ['#198754', '#ffc107', '#dc3545', '#0d6efd'] }] }"
+                [type]="pieChartType">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>

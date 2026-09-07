@@ -1,0 +1,95 @@
+.navbar-nav .btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.navbar-nav .btn:hover {
+  transform: scale(1.05);
+}
+.active-link {
+  background-color: #e6f4ea; /* Light green background */
+  border-left: 4px solid #28a745; /* Green border on the left */
+  font-weight: bold;
+  color: #28a745 !important;
+}
+
+/* Add hover effect to sidebar links */
+.nav-link:hover {
+  background-color: #f1f1f1; /* Light grey background on hover */
+  border-left: 4px solid #218838; /* Slightly darker green */
+  color: #218838 !important;
+  text-decoration: none;
+}
+
+/* Sidebar styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #28a745; /* Bootstrap success color */
+  color: white;
+  padding: 00px;
+  overflow-y: auto;
+  z-index: 1030; /* Above content */
+}
+
+.content-wrapper {
+  margin-left: 250px; /* same as sidebar width */
+  padding: 1rem;
+  min-height: 100vh;
+  background-color: white;
+  box-sizing: border-box;
+  overflow-y: auto;
+  width: calc(100vw - 250px);
+}
+/* Maintain spacing and alignment across screen sizes */
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 1.4rem;
+  }
+
+  .navbar-nav {
+    gap: 0.5rem;
+    justify-content: center;
+  }
+}
+.hero-section {
+  background: url('https://images.unsplash.com/photo-1570968915860-54d5c204a72d?auto=format&fit=crop&w=1600&q=80') no-repeat center center;
+  background-size: cover;
+  min-height: 70vh;
+  padding: 60px 20px;
+  position: relative;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 100, 0, 0.6); /* dark overlay */
+  z-index: 1;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+
+
+
+body {
+      margin: 0;
+      
+      padding-bottom: 60px; /* Reserve space for the fixed footer */
+    }
+
+    footer {
+      /* background-color: #5CB338; */
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      line-height: 60px;
+      z-index: 999;
+    }

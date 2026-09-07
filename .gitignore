@@ -1,0 +1,59 @@
+# ==========================================
+# .NET Backend
+# ==========================================
+
+**/bin/
+**/obj/
+**/.vs/
+
+# .NET test / coverage
+**/TestResults/
+**/coverage/
+
+# ASP.NET local configuration / secrets
+**/appsettings.json
+**/appsettings.Development.json
+**/secrets.json
+
+
+# ==========================================
+# Angular Frontend
+# ==========================================
+
+**/node_modules/
+**/dist/
+**/.angular/
+
+# Angular environment files
+**/.env
+**/.env.*
+!**/.env.example/
+
+
+# ==========================================
+# IDEs / Editors
+# ==========================================
+
+.vscode/
+.idea/
+*.user
+*.suo
+*.sublime-workspace
+.history/
+
+
+# ==========================================
+# Logs
+# ==========================================
+
+**/*.log
+npm-debug.log
+yarn-error.log
+
+
+# ==========================================
+# OS Files
+# ==========================================
+
+.DS_Store
+Thumbs.db

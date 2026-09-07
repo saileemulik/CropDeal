@@ -1,0 +1,355 @@
+<!-- Subscriptions & Form Section -->
+<div *ngIf="activeSection === 'subscription' && currentUserRole === UserRole.Dealer" class="container mt-5">
+  <!-- Toggle Buttons -->
+  <div class="text-center d-flex justify-content-center m-3">
+    <div class="btn-group" role="group" aria-label="Toggle View">
+      <button type="button" class="btn"
+        [ngClass]="{ 'btn-success': selectedView === 'crop', 'btn-outline-success mx-2': selectedView !== 'crop' }"
+        (click)="selectedView = 'crop'">
+        Subscribed Crops
+      </button>
+      <button type="button" class="btn"
+        [ngClass]="{ 'btn-success': selectedView === 'listing', 'btn-outline-success mx-2': selectedView !== 'listing' }"
+        (click)="selectedView = 'listing'">
+        Subscribed Listings
+      </button>
+    </div>
+  </div>
+
+  <!-- Buy Crop Form -->
+  <div *ngIf="isFormVisible && !showTransactions " class="card shadow-sm p-4 mb-4 bg-light-green border-success rounded-4">
+    <div class="card-header text-center bg-success text-white">
+      <h3 class="mb-0">Buy Crop</h3>
+    </div>
+    <div class="card-body bg-white rounded-3 border-success">
+
+      <form (ngSubmit)="makeTransaction()">
+        <div class="form-group mb-3">
+          <label>Crop Listing ID</label>
+          <p class="fw-semibold">{{ trans.listingId }}</p>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="quantity">Quantity</label>
+          <input type="number" class="form-control" id="quantity" name="quantity" [(ngModel)]="trans.quantity"
+            (ngModelChange)="updateTotalPrice()" required />
+          <p class="mt-2 fw-semibold">Total Price: {{ trans.totalPrice | currency }}</p>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+          <button type="submit" class="btn btn-success px-4 mx-1">Buy Now</button>
+          <button type="button" class="btn btn-danger px-4 mx-1" (click)="goBackToSubscriptions()">
+            <i class="fas fa-arrow-left me-2 mx-1"></i>Back
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Subscribed Crops Section -->
+  <div *ngIf="!isFormVisible && selectedView === 'crop'" class="">
+    <!-- Notifications Header -->
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <h3 class="text-success d-flex align-items-end">
+        <i class="bi bi-bell-fill me-2"></i> Notifications
+      </h3>
+      <app-notification-bell></app-notification-bell>
+    </div>
+
+    <div class="card shadow bg-light-green border-success">
+      <div class="rounded-4 shadow-sm">
+        <!-- Header -->
+        <div class="card-header text-center bg-success text-white">
+          <h3 class="mb-0">My Subscribed Crops</h3>
+        </div>
+
+        <!-- Subscribed Crops Section -->
+        <div *ngIf="cropNameSubscriptions.length > 0 ; else noCrops" class="row row-cols-1 row-cols-md-3 g-4 p-4">
+          <div *ngFor="let name of cropNameSubscriptions"
+               class="col-md-4"
+               [ngClass]="{ 'hide-card': selectedCropWithListings && selectedCropWithListings !== name }">
+
+            <div class="card h-100 shadow-sm border-success bg-light-green rounded-4 subscription-card hover-effect">
+              <div class="card-body d-flex flex-column justify-content-between p-4 bg-white rounded-3">
+                <!-- Crop Info -->
+                <div>
+                  <h5 class="card-title text-success mb-3">
+                    <i class="fas fa-seedling me-2 text-success"></i>{{ name }}
+                  </h5>
+                  <p class="text-muted mb-2">
+                    <i class="fas fa-calendar-alt me-2"></i>Subscribed On: {{ name.createdAt | date: 'medium' }}
+                  </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-3 d-flex justify-content-center">
+                  <button class="btn btn-outline-danger mx-1" (click)="unsubscribeFromCropName(name)">
+                    <i class="fas fa-times me-2 mx-1"></i>Unsubscribe
+                  </button>
+                  <button class="btn btn-outline-primary mx-1" (click)="toggleListings(name)">
+                    <i class="fas fa-list me-2 mx-1"></i>View Listings
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Listings Section -->
+        <div *ngIf="selectedCropWithListings && isListingVisible" class="container px-4">
+          <div class="card shadow-sm p-4 border-success bg-white">
+            <div class="text-center mt-4">
+              <button class="btn btn-outline-secondary" (click)="toggleListings(selectedCropWithListings)">
+                <i class="fas fa-arrow-left me-2 mx-1"></i>Back
+              </button>
+            </div>
+            <h5 class="text-success text-center mb-4">
+              Listings for "{{ selectedCropWithListings }}"
+            </h5>
+
+            <div *ngIf="filteredListings.length > 0" class="row">
+              <div *ngFor="let listing of filteredListings" class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-success p-3 bg-white rounded-3 listing-card">
+                  <img *ngIf="listing.imageBase64"
+                       [src]="'data:image/jpeg;base64,' + listing.imageBase64"
+                       class="listing-image mb-3"
+                       style="height: 200px; object-fit: cover; border-radius: 6px;"
+                       alt="Crop Image" />
+
+                  <p><strong>Description:</strong> {{ listing.description }}</p>
+                  <p><strong>Location:</strong> {{ listing.location }}</p>
+                  <p><strong>Listing ID:</strong> {{ listing.id }}</p>
+                  <p><strong>Price:</strong> ₹{{ listing.pricePerKg }}</p>
+                  <p><strong>Quantity:</strong> {{ listing.quantity }} kg</p>
+                  <p><strong>Status:</strong>
+                    <span *ngIf="listing.status === 'Available'" class="badge bg-success text-white mx-1">Available</span>
+                    <span *ngIf="listing.status === 'OutOfStock'" class="badge bg-danger text-white mx-1">Out of Stock</span>
+                    <span *ngIf="listing.status !== 'Available' && listing.status !== 'OutOfStock'" class="badge bg-secondary text-white mx-1">
+                      {{ listing.status }}
+                    </span>
+                  </p>
+
+                  <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-success m-1"
+                            (click)="negotiateFromListing(listing)"
+                            [disabled]="negotiatedListings.has(listing.id)">
+                      <i class="fas fa-handshake me-2 mx-1"></i>Negotiate
+                    </button>
+                    <button *ngIf="negotiatedListings.has(listing.id)"
+                            class="btn btn-outline-info m-1"
+                            (click)="viewNegotiationStatus(listing.id)">
+                      <i class="fas fa-info-circle me-2 mx-1"></i>View Status
+                    </button>
+                    <button class="btn btn-outline-warning m-1"
+                            (click)="navigateToPickup(listing.id)">
+                      <i class="fas fa-truck me-2 mx-1"></i>Pickup Schedule
+                    </button>
+                    <button class="btn btn-outline-primary m-1"
+                            (click)="handlePaymentClick(listing.id)">
+                      <i class="fas fa-credit-card me-2 mx-1"></i>Pay
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- No listings message -->
+            <div *ngIf="filteredListings.length === 0" class="text-center text-muted">
+              No listings found for this crop.
+            </div>
+          </div>
+        </div>
+
+        <!-- No Subscriptions Template -->
+        <ng-template #noCrops>
+          <div class="text-center text-muted fst-italic mt-3">
+            No crop name subscriptions.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscribed Listings -->
+  <div *ngIf="!isNegoForm && selectedView === 'listing' && !isFormVisible " class="card border-success shadow-sm bg-light-green full-bg mt-3 mb-3">
+    <div class="card-header text-center bg-success text-white">
+      <h5 class="mb-0">My Subscriptions</h5>
+    </div>
+
+    <div *ngIf="subscriptions.length > 0; else noSubscriptions">
+      <div class="row mt-2 p-4">
+        <div *ngFor="let subscription of subscriptions" class="col-md-6 col-lg-4 mb-4">
+          <div class="card shadow-sm h-100 border-success bg-light-green rounded-4 subscription-card hover-effect">
+            <div class="card-body bg-white rounded-3 p-4 d-flex flex-column justify-content-between">
+
+              <!-- Header Info -->
+              <div>
+                <h5 class="card-title text-success mb-3">
+                  <i class="fas fa-seedling me-2 text-success"></i>{{ subscription.cropName }}
+                </h5>
+                <p class="text-muted mb-2">
+                  <i class="fas fa-calendar-alt me-2"></i>
+                  Subscribed On: {{ subscription.createdAt | date:'medium' }}
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="mt-3 d-flex flex-wrap justify-content-center gap-2">
+                <button class="btn btn-outline-danger m-1" (click)="unsubscribeCrop(subscription.cropListingId)">
+                  <i class="fas fa-times me-2 mx-1"></i>Unsubscribe
+                </button>
+                <button class="btn btn-outline-success m-1"
+                        (click)="negotiate(subscription)"
+                        [disabled]="negotiatedListings.has(subscription.cropListingId)">
+                  <i class="fas fa-handshake me-2 mx-1"></i>Negotiate
+                </button>
+
+                <button *ngIf="negotiatedListings.has(subscription.cropListingId)"
+                        class="btn btn-outline-info m-1"
+                        (click)="viewNegotiationStatus(subscription.cropListingId)">
+                  <i class="fas fa-info-circle me-2 mx-1"></i>View Status
+                </button>
+
+                <button class="btn btn-outline-warning m-1"
+                        (click)="navigateToPickup(subscription.cropListingId)">
+                  <i class="fas fa-truck me-2 mx-1"></i>Pickup Schedule
+                </button>
+
+                <button class="btn btn-outline-primary m-1"
+                        (click)="handlePaymentClick(subscription.cropListingId)">
+                  <i class="fas fa-credit-card me-2 mx-1"></i>Pay
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noSubscriptions>
+      <p class="text-center text-muted">No subscriptions found.</p>
+    </ng-template>
+  </div>
+
+  <!-- Negotiation Form -->
+  <div *ngIf="isNegoForm && negotiation.cropListingId " class="card border-success shadow-sm bg-light-green full-bg mt-3 mb-3">
+    <div class="card-header text-center bg-success text-white">
+      <h5 class="mb-0">Negotiate Crop Listing</h5>
+    </div>
+    <div class=" shadow-sm p-4  border-success rounded-4 mb-5">
+      <div class="card-body bg-white rounded-3 border-success">
+
+        <div class="mb-3 "><strong class="text-success">Farmer ID:</strong> {{ negotiation.farmerId }}</div>
+        <div class="mb-3"><strong class="text-success">Dealer ID:</strong> {{ negotiation.dealerId }}</div>
+        <div class="mb-3"><strong class="text-success">Crop Listing ID:</strong> {{ negotiation.cropListingId }}</div>
+        <div class="mb-3"><strong class="text-success">Crop Name:</strong> {{ cropName }}</div>
+        <div class="mb-3"><strong class="text-success">Quantity Available:</strong> {{ availableQuantity }}</div>
+
+        <div class="form-group mb-3">
+          <label for="quantity" class="text-success"><strong>Quantity (kg):</strong></label>
+          <input
+            id="quantity"
+            type="number"
+            min="1"
+            class="form-control border-success"
+            [max]="availableQuantity"
+            [(ngModel)]="negotiation.quantity"
+            name="quantity"
+            placeholder="Enter quantity"
+            (ngModelChange)="checkQuantity()" />
+          <div *ngIf="quantityError" class="text-danger mt-1">
+            Quantity cannot be greater than available quantity ({{ availableQuantity }}).
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="proposedPrice" class="text-success"><strong>Proposed Price per Kg:</strong></label>
+          <input
+            id="proposedPrice"
+            type="number"
+            min="0"
+            class="form-control border-success"
+            [(ngModel)]="negotiation.proposedPrice"
+            name="proposedPrice"
+            placeholder="Enter your proposed price" />
+        </div>
+
+        <p class="mb-3">
+          <strong class="text-success">Total Price:</strong>
+          {{ negotiation.quantity * negotiation.proposedPrice | number:'1.2-2' }}
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 mt-3">
+          <button class="btn btn-success mx-1" (click)="submitNegotiation()"
+            [disabled]="quantityError || !negotiation.quantity || !negotiation.proposedPrice">
+            Submit Negotiation
+          </button>
+          <button (click)="isNegoForm = false" class="btn btn-danger ms-2 mx-1">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="activeSection === 'subscription' && currentUserRole === UserRole.Farmer" class="p-4">
+  <!-- Notification Bell Button -->
+  <div class="d-flex justify-content-end mb-3">
+    <app-notification-bell></app-notification-bell>
+  </div>
+
+  <div class="text-center">
+    <button
+      class="btn btn-outline-success mx-1"
+      [class.active]="activeSection === 'subscription'"
+      (click)="activeSection = 'subscription'">
+      Subscriptions
+    </button>
+
+    <button
+      class="btn btn-outline-success mx-1"
+      (click)="navigateToNegotiations()">
+      Negotiations
+    </button>
+  </div>
+
+  <div class="card shadow p-4 mx-auto mt-4 bg-light-green border-success">
+    <div class="card-header text-center bg-success text-white">
+      <h5 class="mb-0">Your Subscriptions</h5>
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="card-body bg-white border-success">
+      <div *ngIf="loading" class="text-center text-gray-500">Loading...</div>
+
+      <!-- No subscriptions -->
+      <div *ngIf="!loading && subscribedListings.length === 0" class="text-center text-gray-500">
+        No subscriptions found.
+      </div>
+
+      <!-- Subscription list -->
+      <div *ngIf="!loading && subscribedListings.length > 0" class="listings-grid bg-light-green">
+  <div *ngFor="let listing of subscribedListings" class="subscription-card">
+    <div class="card-body">
+      <h3 class="listing-title">
+        {{ listing.crop?.name || 'Unknown Crop' }}
+      </h3>
+      <p class="listing-text"><strong>Type:</strong> {{ listing.crop?.type || 'Unknown Type' }}</p>
+      <p class="listing-text"><strong>Crop Listing ID:</strong> {{ listing.cropListingId || 'Unknown ID' }}</p>
+
+      <div class="mt-3 d-flex gap-2">
+        <button (click)="viewListingDetails(listing)" class="btn btn-primary mx-1">
+          <i class="bi bi-eye"></i> View Details
+        </button>
+        <button (click)="navigateToPickup(listing.cropListingId)" class="btn btn-outline-success mx-1">
+          <i class="bi bi-truck"></i> View Pickup Schedule
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>

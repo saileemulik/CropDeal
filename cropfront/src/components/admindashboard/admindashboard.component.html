@@ -1,0 +1,142 @@
+<div class="container mt-4">
+  <!-- <h2 class="mb-3 text-center bg-success text-white">Admin Dashboard</h2> -->
+  <div class="welcome-message p-3 mb-4  rounded d-flex justify-content-between align-items-center">
+  <div>
+    <h4>Welcome back, {{ adminName }}!</h4>
+    <p class="mb-0">{{ currentDateTime | date:'fullDate' }} | {{ currentDateTime | date:'shortTime' }}</p>
+    <small class="fst-italic">"{{ motivationalMessage }}"</small>
+  </div>
+  <div>
+    <!-- <i class="bi bi-emoji-smile fs-1"></i> -->
+  </div>
+</div>
+
+  <div class="row text-center">
+    <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Total Users</h5>
+        <p class="fs-4">{{ stats?.totalUsers }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Farmers</h5>
+        <p class="fs-4">{{ stats?.farmers }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Dealers</h5>
+        <p class="fs-4">{{ stats?.dealers }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Active Users</h5>
+        <p class="fs-4">{{ stats?.activeUsers }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Total Listings</h5>
+        <p class="fs-4">{{ stats?.totalListings }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Total Crops</h5>
+        <p class="fs-4">{{ stats?.totalCrops }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Active Listings</h5>
+        <p class="fs-4">{{ stats?.activeListings }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Pending Requests</h5>
+        <p class="fs-4">{{ stats?.newCropRequest }}</p>
+      </div>
+    </div>
+    <!-- <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Approved Requests</h5>
+        <p class="fs-4">{{ stats?.approvedRequest }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Rejected Requests</h5>
+        <p class="fs-4">{{ stats?.rejectedRequest }}</p>
+      </div>
+    </div> -->
+   <div class="col-md-3">
+      <div class="card bg-light p-3">
+        <h5>Total Transactions</h5>
+        <p class="fs-4">{{ stats?.totalTransactions }}</p>
+      </div>
+    </div>
+  </div>
+<div class="row mt-4">
+  <!-- Pie Chart -->
+<div class="row mt-4">
+  <!-- Bar Chart -->
+  <div class="col-md-6">
+    <h5 class="text-center">Monthly Transactions</h5>
+    <canvas baseChart
+  [type]="barChartType"
+  [data]="barChartData"
+ >
+</canvas>
+  </div>
+
+  <!-- Pie Chart -->
+  <div class="col-md-6">
+    <h5 class="text-center">User Role Distribution</h5>
+    <canvas baseChart
+  [type]="userPieChartType"
+  [data]="userPieChartData"
+ >
+</canvas>
+  </div>
+</div>
+<!-- Pie Chart: Crop Request Status -->
+<div class="card mt-4 shadow-sm border-success">
+  <div class="card-header bg-success text-white text-center">
+    <h5>Crop Requests Overview</h5>
+  </div>
+  <div class="card-body">
+    <canvas baseChart
+      [type]="pendingPieChartType"
+      [data]="pendingPieChartData"
+      [options]="pendingPieChartOptions">
+    </canvas>
+  </div>
+</div>
+
+
+</div>
+
+  <!-- <div class="row mt-4">
+    <div class="col-md-6">
+     
+ <div style="display: block;">
+  <canvas baseChart
+            [data]="{ labels: barChartLabels, datasets: barChartData }"
+            [options]="barChartOptions"
+            [type]="barChartType">
+    </canvas>
+</div>
+
+    </div>
+   
+  </div> -->
+   <!-- Notification Bell -->
+   <div class="position-absolute top-0 end-0 me-3 mt-2" style="z-index: 1100;">
+     <app-notification-bell></app-notification-bell>
+   </div>
+
+
+</div>

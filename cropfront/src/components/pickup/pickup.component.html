@@ -1,0 +1,95 @@
+<div class="container mt-4">
+  <h2 class="text-success text-center">Pickup Schedule Management</h2>
+
+  <!-- Back Button -->
+  <div class="text-start mb-3">
+    <button class="btn btn-outline-dark" (click)="navigateToSubscription()">← Back to Subscription</button>
+  </div>
+
+  <!-- Role-Based Action Buttons -->
+  <div class="text-center mt-3">
+    <ng-container *ngIf="currentUserRole == UserRole.Dealer">
+     <button class="btn btn-outline-primary m-1"
+        (click)="activeSection = 'create'"
+        [disabled]="isProposalCreated">
+  Create Proposal
+</button>
+
+    </ng-container>
+    <button class="btn btn-outline-secondary m-1" (click)="activeSection = 'list'">View All</button>
+  </div>
+
+  <!-- Create Proposal Form -->
+  <div *ngIf="activeSection === 'create' && currentUserRole == UserRole.Dealer" class="card p-3 mt-4">
+    <h5>Create New Proposal</h5>
+    <label>Proposed Pickup Slot:</label>
+    <input type="datetime-local" class="form-control" [(ngModel)]="newSchedule.proposedPickupSlot">
+    <button class="btn btn-primary mt-2" (click)="createProposal()">Create Proposal</button>
+  </div>
+
+  <!-- Pickup List Table -->
+<!-- Pickup List Table -->
+<div *ngIf="activeSection === 'list'" class="card p-3 mt-4">
+  <h5>Pickup Schedules</h5>
+  <table class="table table-bordered mt-2">
+    <thead>
+      <tr>
+        <th>Schedule ID</th>
+        <th>Proposed Slot</th>
+        <th>Status</th>
+        <th *ngIf="currentUserRole === UserRole.Dealer">Update</th>
+        <th *ngIf="currentUserRole === UserRole.Dealer">Cancel</th>
+        <th *ngIf="currentUserRole === UserRole.Farmer">Update Status</th> <!-- 👈 Farmer Column -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let schedule of schedules">
+        <td>{{ schedule.id }}</td>
+        <td>{{ schedule.proposedPickupSlot | date: 'medium' }}</td>
+        <td>{{ schedule.status }}</td>
+
+        <!-- Dealer: Update Column -->
+        <!-- Update Column -->
+<td *ngIf="currentUserRole === UserRole.Dealer">
+  <div *ngIf="editingScheduleId === schedule.id; else updateButton">
+    <input type="datetime-local" class="form-control mb-1"
+           [(ngModel)]="updatedScheduleDate[schedule.id!]">
+    <button class="btn btn-sm btn-success me-1"
+            (click)="confirmUpdate(schedule.id!)">Save</button>
+    <button class="btn btn-sm btn-secondary"
+            (click)="editingScheduleId = null">Cancel</button>
+  </div>
+  <ng-template #updateButton>
+    <button class="btn btn-sm btn-outline-info"
+            (click)="startEditing(schedule.id!)"
+            [disabled]="schedule.status === PickupStatus.Confirmed">
+      Update
+    </button>
+  </ng-template>
+</td>
+
+
+        <!-- Dealer: Cancel Column -->
+        <td *ngIf="currentUserRole === UserRole.Dealer">
+          <button class="btn btn-sm btn-outline-danger"
+                  (click)="cancelSchedule(schedule.id!)">
+            Cancel
+          </button>
+        </td>
+
+       <!-- Farmer Status Update Dropdown -->
+<td *ngIf="currentUserRole === UserRole.Farmer">
+  <select class="form-select"
+          [(ngModel)]="schedule.status"
+          (change)="updateSingleScheduleStatus(schedule.id!, schedule.status)">
+    <option *ngFor="let status of pickupStatuses" [value]="status">{{ status }}</option>
+  </select>
+</td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+</div>

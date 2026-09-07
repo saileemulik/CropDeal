@@ -1,0 +1,112 @@
+<div *ngIf="activeSection === 'address'" class="card h-100 shadow p-4 mb-4 border border-success  rounded-4" style="background-color: #f0fdf4;">
+  <!-- NavBar with bottom border only and active/hover effect -->
+   <ul class="nav nav-pills border-bottom border-success mb-4 pb-2 justify-content-center gap-3">
+    <li class="nav-item">
+      <a class="nav-link px-3 py-1 rounded-3" 
+         [ngClass]="{'active-link': isActive('/users')}" 
+         [routerLink]="'/users'">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link px-3 py-1 rounded-3" 
+         [ngClass]="{'active-link': isActive('/address')}" 
+         [routerLink]="'/address'">Address</a>
+    </li>
+    <li class="nav-item" *ngIf="currentUserRole !== UserRole.Admin">
+      <a class="nav-link px-3 py-1 rounded-3 fw-semibold" 
+         [ngClass]="{'active-link': isActive('/bank')}" 
+         [routerLink]="'/bank'">Bank</a>
+    </li>
+  </ul>
+
+  <!-- Address Display Section -->
+  <h2 class="text-center fw-bold display-5 mb-5" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2c7a2c;">
+  Address Management
+</h2>
+
+<div class="d-flex justify-content-center px-3">
+  <div class="card shadow-lg p-5 w-100 position-relative" style="max-width: 800px; border-radius: 1.5rem; font-family: 'Segoe UI', sans-serif; border: 2px solid #2c7a2c; ">
+
+    <!-- Top-Right Edit/Cancel Toggle Button -->
+    <div class="d-flex align-content-lg-end position-absolute" style="top: 20px; right: 20px;">
+      
+      <button
+        class="btn ms-auto fw-semibold"
+        [ngClass]="isFormVisible ? 'btn-danger' : 'btn-warning'"
+        style="min-width: 100px; font-size: 1rem;"
+        (click)="isFormVisible = !isFormVisible; isEdit = !isEdit"
+      >
+        <i class="bi" [ngClass]="isFormVisible ? 'bi-x-lg mx-1' : 'bi-pencil-fill mx-1'"></i>
+        {{ isFormVisible ? 'Cancel' : 'Edit' }}
+      </button>
+    </div>
+    
+
+    <!-- View Mode -->
+    <div *ngIf="!isFormVisible" class="table-responsive mt-4">
+      <table class="table table-borderless fs-5 text-dark">
+        <tbody>
+          <tr>
+            <th class="text-success fw-semibold" style="width: 35%; letter-spacing: 0.03em;">🏠 Street</th>
+            <td>{{ address.street || '-' }}</td>
+          </tr>
+          <tr>
+            <th class="text-success fw-semibold" style="letter-spacing: 0.03em;">🏙️ City</th>
+            <td>{{ address.city || '-' }}</td>
+          </tr>
+          <tr>
+            <th class="text-success fw-semibold" style="letter-spacing: 0.03em;">🌆 State</th>
+            <td>{{ address.state || '-' }}</td>
+          </tr>
+          <tr>
+            <th class="text-success fw-semibold" style="letter-spacing: 0.03em;">📮 Zip Code</th>
+            <td>{{ address.zipCode || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Edit/Add Mode -->
+    <div *ngIf="isFormVisible" class="mt-4">
+      <form (ngSubmit)="isEdit ? updateAddress() : addAddress()" class="row gx-4 gy-4">
+        <div class="col-md-6 d-flex flex-column">
+          <label class="form-label fw-semibold text-success mb-2"><strong>Street</strong></label>
+          <input type="text" class="form-control border-success shadow-sm mb-4" [(ngModel)]="address.street" name="street" placeholder="Enter street" required />
+        </div>
+
+        <div class="col-md-6 d-flex flex-column">
+          <label class="form-label fw-semibold text-success mb-2"><strong>City</strong></label>
+          <input type="text" class="form-control  border-success shadow-sm" [(ngModel)]="address.city" name="city" placeholder="Enter city" required />
+        </div>
+
+        <div class="col-md-6 d-flex flex-column">
+          <label class="form-label fw-semibold text-success mb-2"><strong>State</strong></label>
+          <input type="text" class="form-control  border-success shadow-sm" [(ngModel)]="address.state" name="state" placeholder="Enter state" required />
+        </div>
+
+        <div class="col-md-6 d-flex flex-column">
+          <label class="form-label fw-semibold text-success mb-2"><strong>Zip Code</strong></label>
+          <input type="text" class="form-control  border-success shadow-sm" [(ngModel)]="address.zipCode" name="zipCode" placeholder="Enter zip code" required />
+        </div>
+
+        <div class="col-12 d-flex justify-content-center gap-3 mt-4">
+          <button type="submit" class="btn btn-success  px-5 fw-semibold shadow-sm">
+            <i class="bi bi-check-lg me-2 mx-1"></i> {{ isEdit ? 'Update' : 'Add' }}
+          </button>
+          <!-- <button type="button" (click)="isFormVisible = false; isEdit = false" class="btn btn-outline-danger  px-5 fw-semibold shadow-sm">
+            <i class="bi bi-x me-2"></i> Cancel
+          </button> -->
+        </div>
+      </form>
+    </div>
+
+    <!-- Add Address Button if none exists -->
+    <div *ngIf="!isFormVisible && !showAddress" class="text-center mt-4">
+      <button class="btn btn-outline-primary fw-semibold px-4 py-2" (click)="isFormVisible = true; isEdit = false" style="font-size: 1rem;">
+        <i class="bi bi-plus-circle me-2 mx-1"></i> Add Address
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</div>

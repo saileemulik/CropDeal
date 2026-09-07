@@ -1,0 +1,367 @@
+<div *ngIf="activeSection === 'listing' && currentUserRole === UserRole.Admin" class="listings-section card border-success shadow-sm bg-light-green full-bg mt-3 mb-3">
+
+   <div class="card-header text-center bg-success text-white">
+    <h5 class="mb-0">Crop Listings</h5>
+</div>
+
+  <div class="listings-grid p-4">
+    <div *ngFor="let listing of cropListings" class="listing-card card p-3">
+      <img [src]="'data:image/jpeg;base64,' + listing.imageUrl" *ngIf="listing.imageUrl" class="listing-image mb-3" />
+      <h5 class="text-success text-center fw-bold">{{ listing.crop.name }}</h5>
+      <p><strong>Description:</strong> {{ listing.description }}</p>
+      <p><strong>Location:</strong> {{ listing.location }}</p>
+      <p><strong>Price:</strong> ₹{{ listing.pricePerKg }}/{{ listing.unit }}</p>
+      <p><strong>Quantity:</strong> {{ listing.quantity }} {{ listing.unit }}</p>
+     <p><strong>Status:</strong>
+  <span *ngIf="listing.status === 'Available'" class="badge bg-success text-white mx-1">Available</span>
+  <span *ngIf="listing.status === 'OutOfStock'" class="badge bg-danger text-white mx-1">Out of Stock</span>
+  <span *ngIf="listing.status !== 'Available' && listing.status !== 'OutOfStock'" class="badge bg-secondary text-white mx-1">
+    {{ listing.status }}
+  </span>
+</p>
+
+    </div>
+  </div>
+</div>
+<div *ngIf="activeSection === 'listing' && currentUserRole === UserRole.Dealer" class="container px-4 py-4">
+  <!-- Toggle Buttons -->
+  <div class="toggle-buttons d-flex justify-content-center m-3">
+    <button (click)="listingOrCropView = 'listings'"
+            [class.active]="listingOrCropView === 'listings'"
+            class="btn btn-outline-success me-2 mx-2">
+      Crop Listings
+    </button>
+    <button (click)="listingOrCropView = 'crops'"
+            [class.active]="listingOrCropView === 'crops'"
+            class="btn btn-outline-success mx-2">
+      Crops
+    </button>
+  </div>
+
+  <!-- Crop Listings Section -->
+  <div *ngIf="listingOrCropView === 'listings'" class="listings-section card shadow-sm mb-4 bg-light-green border-success rounded-4">
+    <div class="card-header text-center bg-success text-white">
+    <h4 class="mb-0">Crop Listings</h4>
+</div>
+
+    <!-- Filters -->
+    <div class="row mb-4 p-3">
+      <div class="col-md-3 mb-2">
+        <input type="text" class="form-control" placeholder="Search by crop name..."
+               [(ngModel)]="searchName" (input)="filterListings()" />
+      </div>
+      <!-- <div class="col-md-3 mb-2">
+        <input type="text" class="form-control" placeholder="Search by crop type..."
+               [(ngModel)]="searchType" (input)="filterListings()" />
+      </div> -->
+      <div class="col-md-3 mb-2">
+        <input type="number" class="form-control" placeholder="Min Price"
+               [(ngModel)]="minPrice" (input)="filterListings()" />
+      </div>
+      <div class="col-md-3 mb-2">
+        <input type="number" class="form-control" placeholder="Max Price"
+               [(ngModel)]="maxPrice" (input)="filterListings()" />
+      </div>
+      <div class="text-center mt-2 d-flex justify-content-center">
+        <button class="btn btn-outline-secondary btn-sm " (click)="resetFilters()">Reset Filters</button>
+      </div>
+    </div>
+
+    <!-- Listings Grid -->
+    <div class="listings-grid p-4">
+      <ng-container *ngIf="filteredListings.length > 0; else showAll">
+        <div *ngFor="let listing of filteredListings" class="listing-card card shadow-sm p-3 bg-light-green rounded-3 mb-3">
+          <!-- Image -->
+          <img *ngIf="listing.imageBase64"
+               [src]="'data:image/jpeg;base64,' + listing.imageBase64"
+               class="listing-image mb-3"
+               style="height: 200px; object-fit: cover;" alt="Crop Image" />
+
+          <!-- Crop Name -->
+          <h5 class="text-success text-center fw-bold">{{ listing.crop.name }}</h5>
+
+          <!-- Details -->
+          <p><strong>Description:</strong> {{ listing.description }}</p>
+          <p><strong>Location:</strong> {{ listing.location }}</p>
+          <p><strong>Price:</strong> ₹{{ listing.pricePerKg }}/{{ listing.unit }}</p>
+          <p><strong>Quantity:</strong> {{ listing.quantity }} {{ listing.unit }}</p>
+
+          <!-- Status Badge -->
+          <p><strong>Status:</strong>
+            <span *ngIf="listing.status === 'Available'" class="badge bg-success text-white mx-1">Available</span>
+            <span *ngIf="listing.status === 'OutOfStock'" class="badge bg-danger text-white mx-1">Out of Stock</span>
+            <span *ngIf="listing.status !== 'Available' && listing.status !== 'OutOfStock'" class="badge bg-secondary text-white mx-1">
+              {{ listing.status }}
+            </span>
+          </p>
+
+          <!-- Subscribe/Unsubscribe -->
+          <div class="text-center">
+            <button *ngIf="!isSubscribed(listing.id)"
+                    class="btn btn-outline-success w-50 mt-3 mb-3 p-1"
+                    (click)="subscribeCrop(listing.id)">
+              <i class="fas fa-bell me-2 mx-1"></i>Subscribe
+            </button>
+            <button *ngIf="isSubscribed(listing.id)"
+                    class="btn btn-outline-danger w-50 mt-3 mb-3 p-1"
+                    (click)="unsubscribeCrop(listing.id)">
+              <i class="fas fa-bell-slash me-2 mx-1"></i>Unsubscribe
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Show All Template for Unfiltered -->
+    <ng-template #showAll>
+      <div class="listings-grid p-4">
+        <div *ngFor="let listing of listings" class="listing-card card p-3">
+          <!-- Image -->
+          <img *ngIf="listing.imageBase64"
+               [src]="'data:image/jpeg;base64,' + listing.imageBase64"
+               class="listing-image mb-3"
+               style="height: 200px; object-fit: cover;" alt="Crop Image" />
+
+          <!-- Title -->
+          <h5 class="text-success text-center fw-bold">{{ listing.crop.name }}</h5>
+
+          <!-- Details -->
+          <p><strong>Description:</strong> {{ listing.description }}</p>
+          <p><strong>Location:</strong> {{ listing.location }}</p>
+          <p><strong>Price:</strong> ₹{{ listing.pricePerKg }}/{{ listing.unit }}</p>
+          <p><strong>Quantity:</strong> {{ listing.quantity }} {{ listing.unit }}</p>
+
+          <!-- Status -->
+          <p><strong>Status:</strong>
+            <span *ngIf="listing.status === 'Available'" class="badge bg-success text-white mx-1">Available</span>
+            <span *ngIf="listing.status === 'OutOfStock'" class="badge bg-danger text-white mx-1">Out of Stock</span>
+            <span *ngIf="listing.status !== 'Available' && listing.status !== 'OutOfStock'" class="badge bg-secondary text-white mx-1">
+              {{ listing.status }}
+            </span>
+          </p>
+
+          <!-- Subscribe/Unsubscribe -->
+          <div class="text-center">
+            <button *ngIf="!isSubscribed(listing.id)"
+                    class="btn btn-outline-success w-50 mt-2 mb-2 p-1"
+                    (click)="subscribeCrop(listing.id)">
+              <i class="fas fa-bell me-2 mx-1"></i>Subscribe
+            </button>
+            <button *ngIf="isSubscribed(listing.id)"
+                    class="btn btn-outline-danger w-50 mt-2 mb-2 p-1"
+                    (click)="unsubscribeCrop(listing.id)">
+              <i class="fas fa-bell-slash me-2 mx-1"></i>Unsubscribe
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Crops View Placeholder -->
+  <div *ngIf="listingOrCropView === 'crops'" class="card bg-light-green border-success rounded-4">
+  <div class="card-header text-white bg-success text-center"><h4 class="mb-0 ">Crops</h4></div>
+  <div class="row g-4 p-3">
+    <div *ngFor="let crop of crops" class="col-md-4 mb-4">
+      <div class="card shadow-sm border-success rounded-3 h-100">
+        <div class="card-body bg-white text-center d-flex flex-column justify-content-between">
+          <h5 class="text-success fw-bold mb-3">{{ crop.name }}</h5>
+
+          <div class="mt-auto">
+            <button *ngIf="!isSubscribedToCrop(crop.name)"
+                    (click)="subscribeToCropName(crop.name)"
+                    class="btn btn-outline-success w-75 mb-2">
+              <i class="fas fa-bell me-2"></i>Subscribe
+            </button>
+            <button *ngIf="isSubscribedToCrop(crop.name)"
+                    (click)="unsubscribeFromCropName(crop.name)"
+                    class="btn btn-outline-danger w-75">
+              <i class="fas fa-bell-slash me-2"></i>Unsubscribe
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div *ngIf="activeSection === 'listing' && currentUserRole === UserRole.Farmer">
+
+  <!-- Toggle Buttons -->
+  <div class="d-flex justify-content-center gap-3 my-3">
+    <button class="btn mx-1" [ngClass]="activeListingView === 'add' ? 'btn-success' : 'btn-outline-success'" (click)="activeListingView = 'add'">Add Listing</button>
+    <button class="btn mx-1" [ngClass]="activeListingView === 'view' ? 'btn-success' : 'btn-outline-success'" (click)="activeListingView = 'view'; loadCropListings()">View Listings</button>
+  </div>
+
+  <!-- Add Listing Form -->
+  <div *ngIf="activeListingView === 'add'" class="card shadow p-4  mx-auto mt-4 bg-light-green border-success">
+      <div class="card-header text-center bg-success text-white">
+    <h5 class="mb-0">Add Crop Listing</h5>
+      </div>
+    <div class="card-body bg-white border-success">
+      <form (ngSubmit)="addListing()">
+        <div class="mb-2">
+          <label><strong class="text-success">Select Crop:</strong></label>
+          <select [(ngModel)]="selectedCropId" name="crop" required class="form-control">
+            <option value="" disabled selected>Select a Crop</option>
+            <option *ngFor="let crop of crops" [value]="crop.id">{{ crop.name }}</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label><strong class="text-success">Quantity:</strong></label>
+          <input [(ngModel)]="quantity" name="quantity" type="number" required class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label><strong class="text-success">Price Per Unit:</strong></label>
+          <input [(ngModel)]="price" name="pricePerKg" type="number" required class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label><strong class="text-success">Unit:</strong></label>
+          <input [(ngModel)]="unit" name="unit" type="text" required class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label><strong class="text-success">Location:</strong></label>
+          <input [(ngModel)]="location" name="location" type="text" required class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label><strong class="text-success">Description:</strong></label>
+          <input [(ngModel)]="description" name="description" type="text" required class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label><strong class="text-success">Crop Image:</strong></label>
+          <input type="file" (change)="onFileSelected($event)" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label><strong class="text-success">Status:</strong></label>
+          <select class="form-control" [(ngModel)]="status" name="status" required>
+            <option *ngFor="let c of cropStatusList" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+        <div class="text-center"><button type="submit" class="btn btn-success ">Add Listing</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Listings Section -->
+  <div *ngIf="activeListingView === 'view' && cropListings.length > 0" class="card shadow-sm border-success bg-light-green mt-4">
+  <div class="card-header bg-success text-white rounded-top">
+    <h4 class="mb-0 text-center">My Crop Listings</h4>
+  </div>
+  <div class="card-body bg-light-green border-success rounded-4">
+    <div class="table-responsive">
+      <table class="table bg-white shadow-sm custom-table table-bordered table-hover align-middle text-center">
+        <thead class="table-success">
+          <tr>
+            <th>Crop Name</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Price/Unit</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Update</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let listing of cropListings">
+            <td>{{ listing.crop?.name || 'Unknown' }}</td>
+            <td>{{ listing.quantity }}</td>
+            <td>{{ listing.unit }}</td>
+            <td>₹{{ listing.pricePerKg }}</td>
+            <td>{{ listing.location }}</td>
+            <td>{{ listing.description }}</td>
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-success': listing.status === 'Available',
+                  'bg-danger': listing.status !== 'Available'
+                }">
+                {{ listing.status }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-warning btn-sm shadow-sm fw-semibold" (click)="editListing(listing)">
+                <i class="bi bi-pencil-fill me-1 mx-1"></i> Update
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-danger btn-sm shadow-sm fw-semibold" (click)="deleteListings(listing.id)">
+                <i class="bi bi-trash-fill me-1 mx-1"></i> Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- No listings message -->
+<div *ngIf="activeListingView === 'view' && cropListings?.length === 0" class="alert alert-warning text-center mt-3">
+  No crop listings available.
+</div>
+
+  <!-- Edit Listing Form -->
+  <div *ngIf="activeListingView === 'edit' && editableListing" class="card shadow p-4  mx-auto mt-4 bg-light-green border-success">
+     <div class="card-header text-center bg-success text-white">
+    <h5 class="mb-0">Edit Listing</h5>
+      </div>
+    <div class="card-body bg-white">
+      <form (ngSubmit)="updateListings()">
+        <div class="mb-2">
+          <strong  class="text-success">Crop: </strong> {{ editableListing.crop?.name || 'Unknown' }}
+        </div>
+        <div class="mb-2">
+          <label> <strong  class="text-success">Quantity: </strong> </label>
+          <input [(ngModel)]="editableListing.quantity" name="editQuantity" type="number" required class="form-control border-success " />
+        </div>
+        <div class="mb-2">
+          <label> <strong  class="text-success">Price Per Unit: </strong> </label>
+          <input [(ngModel)]="editableListing.pricePerKg" name="editPricePerKg" type="number" required class="form-control border-success " />
+        </div>
+        <div class="mb-2">
+          <label> <strong  class="text-success">Unit: </strong> </label>
+          <input [(ngModel)]="editableListing.unit" name="editUnit" type="text" required class="form-control border-success" />
+        </div>
+        <div class="mb-2">
+          <label> <strong  class="text-success">Description: </strong> </label>
+          <input [(ngModel)]="editableListing.description" name="editDescription" type="text" required class="form-control border-success " />
+        </div>
+         <div class="mb-3">
+  <label class="form-label fw-semibold"> <strong  class="text-success">Crop Image: </strong> </label>
+
+  <!-- Current Image Preview -->
+  <div *ngIf="editableListing.imageUrl" class="mb-2">
+    <img [src]="'data:image/jpeg;base64,' + editableListing.imageUrl"
+         alt="Current Crop Image"
+         class="img-thumbnail border-success "
+         style="max-width: 150px;">
+  </div>
+
+  <!-- New Image Upload -->
+  <input type="file"
+         accept="image/*"
+         class="form-control border-success "
+         (change)="onEditImageSelected($event)">
+</div>
+
+
+        <div class="mb-2">
+          <label> <strong  class="text-success">Status: </strong> </label>
+          <select class="form-control border-success " [(ngModel)]="editableListing.status" name="editStatus" required>
+            <option *ngFor="let status of cropStatusList" [value]="status">{{ status }}</option>
+          </select>
+        </div>
+        <div class="button-container text-center">
+          <button type="submit" class="btn btn-success mx-`">Save</button>
+          <button type="button" class="btn btn-danger mx-1" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>

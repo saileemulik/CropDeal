@@ -1,0 +1,113 @@
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 3 cards per row on wider screens */
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.bg-light-green {
+  background-color: #f0fdf4; /* soft green tint */
+}
+
+.listing-card {
+  background-color: #ffffff;
+  border: 2px solid #dee2e6;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.listing-card:hover {
+  transform: scale(1.02);
+}
+
+.listing-image {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+  display: block;
+}
+
+.bg-light-green {
+  background-color: #e9f7ef !important;
+}
+
+.listing-title {
+  font-size: 1.25rem;
+}
+
+.listing-text i {
+  color: #28a745;
+}
+.listing-card:hover {
+  transform: translateY(-3px);
+  transition: 0.3s ease;
+}
+.listing-card {
+  border: 2px solid #198754;
+  border-radius: 5px;
+  transition: transform 0.2s ease-in-out;
+  /* transition: transform 0.3s ease, box-shadow 0.3s ease; */
+}
+
+
+.btn {
+  white-space: nowrap; /* Prevents text from wrapping */
+  overflow: hidden;     /* Hides overflow if any */
+  text-overflow: ellipsis; /* Adds "..." if text overflows */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem; /* Adjust padding for better fit */
+  font-size: 1rem;      /* Ensure readable text */
+
+}
+
+.btn i {
+  transition: transform 0.2s ease;
+  vertical-align: middle;
+}
+
+
+
+/* Subscriptions Section */
+.subscription-card {
+  background-color: #f5fcf8;
+  border-left: 6px solid #28a745;
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.subscription-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+.custom-table {
+  border: 1.5px solid #198754;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 0 0.25rem 0.5rem rgba(25, 135, 84, 0.15);
+  overflow: hidden;
+}
+
+.custom-table thead tr {
+  background-color: #d1e7dd;
+  border-bottom: 1.5px solid #198754;
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #198754;
+  padding: 0.75rem 1rem;
+}
+
+.custom-table tbody tr:nth-child(even) {
+  background-color: #f5fbf7;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #d1e7dd;
+  transition: background-color 0.3s ease;
+}

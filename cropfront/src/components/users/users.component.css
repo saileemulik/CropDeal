@@ -1,0 +1,72 @@
+/* Navbar Link Styling */
+.nav-link {
+  border-bottom: 2px solid transparent;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  border-bottom: 2px solid #28a745;
+  background-color: #f8f9fa;
+  color: #28a745;
+}
+
+.active-link {
+  border-bottom: 3px solid #198754;
+  color: #198754 !important;
+  font-weight: 600;
+}
+.profile-container {
+  background: #f9fdf8;
+}
+
+.profile-field {
+  border-bottom: 1px solid #d4e7d4;
+  padding-bottom: 10px;
+}
+
+.profile-field:last-child {
+  border-bottom: none;
+}
+
+.field-value {
+  color: #2c5f2d;
+  font-weight: 600;
+}
+
+.badge.bg-success-subtle {
+  background-color: #d7f1d5 !important;
+  color: #2c5f2d !important;
+  font-weight: 600;
+  border-radius: 0.4rem;
+}
+
+.btn-outline-success {
+  border-width: 2px;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 576px) {
+  .profile-field {
+    border-bottom: 1px solid #d4e7d4;
+  }
+}
+.edit-section input.form-control {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.edit-section input.form-control:focus {
+  box-shadow: 0 0 8px rgba(44, 122, 44, 0.6);
+  border-color: #2c7a2c;
+}
+
+.edit-section label {
+  user-select: none;
+}
+
+.edit-section button:hover {
+  filter: brightness(1.1);
+  transition: filter 0.3s ease;
+}
+
+

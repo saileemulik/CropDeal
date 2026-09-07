@@ -1,0 +1,112 @@
+<div *ngIf="activeSection === 'rating' && currentUserRole == UserRole.Admin" class="mt-5">
+  <h2 class="text-center mb-4 text-success">All Review Details</h2>
+
+  <!-- Show Average Rating -->
+  <p *ngIf="averageRating" class="text-center">Average Rating: {{ averageRating }}</p>
+
+  <div *ngIf="showRating; else noReviews">
+    <div class="container-fluid">
+      <div class="card border-success shadow-sm bg-light-green full-bg mt-3 mb-3">
+        <div class="card-header text-center bg-success text-white">
+          <h5 class="mb-0">All Review Details</h5>
+        </div>
+
+        <div class="row p-4">
+          <div *ngFor="let rating of ratings" class="col-md-6 col-lg-4 mb-4">
+            <div class="shadow-sm border border-success rounded-4">
+              <div class="card-body bg-white">
+                <p><strong>Farmer ID:</strong> {{ rating.farmerId }}</p>
+                <p><strong>Dealer ID:</strong> {{ rating.dealerId }}</p>
+                <p><strong>Transaction ID:</strong> {{ rating.transactionId }}</p>
+                <p>
+                  <strong>Rating:</strong>
+                  <span [innerHTML]="getStarHTML(rating.rating)" class="star-display mx-1"></span>
+                </p>
+                <p><strong>Comment:</strong> {{ rating.comment }}</p>
+                <button class="btn btn-danger mt-2" (click)="deleteRatings(rating.id)">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- No Reviews Template -->
+  <ng-template #noReviews>
+    <p class="alert alert-warning text-center">No reviews available.</p>
+  </ng-template>
+</div>
+
+<div *ngIf="activeSection === 'rating' && currentUserRole == UserRole.Farmer" class="mt-5">
+  <h2 class="text-center mb-4 text-success">My Review Details</h2>
+
+  <!-- Show Average Rating -->
+  <p *ngIf="averageRating" class="text-center">Average Rating: {{ averageRating }}</p>
+
+  <div *ngIf="showRating; else noReviews">
+    <div class="container-fluid">
+      <div class="card border-success shadow-sm bg-light-green full-bg mt-3 mb-3">
+        <div class="card-header text-center bg-success text-white">
+          <h5 class="mb-0">My Review Details</h5>
+        </div>
+
+        <div class="row p-4">
+          <div *ngFor="let rating of ratings; index as i" class="col-md-6 col-lg-4 mb-4">
+            <div class="shadow-sm border border-success rounded-4">
+              <div class="card-body bg-white">
+                <p><strong>#:</strong> {{ i + 1 }}</p>
+                <p><strong>Transaction ID:</strong> {{ rating.transactionId }}</p>
+                <p>
+                  <strong>Rating:</strong>
+                  <span [innerHTML]="getStarHTML(rating.rating)" class="star-display mx-1"></span>
+                </p>
+                <p><strong>Comment:</strong> {{ rating.comment }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- No Reviews Message -->
+  <ng-template #noReviews>
+    <p class="alert alert-warning text-center">No reviews available.</p>
+  </ng-template>
+</div>
+
+
+ <div *ngIf="activeSection === 'rating' && currentUserRole == UserRole.Dealer" >
+  <h2 class="text-center mb-4 text-success">My Review Details</h2>
+
+  <!-- Ratings Display Section -->
+  <div *ngIf="showRating && !isReviewFormVisible else noReviews">
+    <div class="container-fluid">
+      <div class="card border-success shadow-sm bg-light-green full-bg mt-3 mb-3">
+          <div class="card-header text-center bg-success text-white">
+    <h5 class="mb-0">My Review Details</h5>
+</div>
+        <div *ngFor="let rating of ratings" class="col-md-6 col-lg-4 mb-4 p-4">
+          <div class="shadow-sm border border-success  rounded-4">
+            <div class="card-body bg-white border-success">
+              <p><strong>Transaction ID:</strong> {{ rating.transactionId || rating.transId || rating.id }}</p>
+              <p><strong>Farmer ID:</strong> {{ rating.farmerId }}</p>
+              <p>
+                <strong>Rating:</strong>
+                <span [innerHTML]="getStarHTML(rating.rating)" class="star-display mx-1"></span>
+              </p>
+              <p><strong>Comment:</strong> {{ rating.comment }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noReviews>
+    <p class="alert alert-warning text-center">No reviews available.</p>
+  </ng-template>
+</div>

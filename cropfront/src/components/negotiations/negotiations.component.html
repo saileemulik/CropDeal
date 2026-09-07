@@ -1,0 +1,188 @@
+<div *ngIf="currentUserRole === UserRole.Farmer" class="container my-4">
+
+  <!-- Navigation Buttons -->
+  <div class="d-flex justify-content-center mb-3">
+    <div class="text-center btn-grp ">
+      <button class="btn btn-outline-success me-2 mx-1" (click)="navigateToNegotiations()">Subscriptions</button>
+      <button class="btn btn-outline-success mx-1">Negotiations</button>
+    </div>
+
+  </div>
+  <div class="text-center btn-group justify-content-right">
+      <button
+        class="btn mx-1"
+        [ngClass]="negotiationView === 'pending' ? 'btn-success' : 'btn-outline-success'"
+        (click)="toggleNegotiationView('pending')">
+        Pending Negotiations
+      </button>
+      <button
+        class="btn mx-1"
+        [ngClass]="negotiationView === 'history' ? 'btn-success' : 'btn-outline-success'"
+        (click)="toggleNegotiationView('history')">
+        Accepted / Rejected
+      </button>
+    </div>
+
+  <h3 class="mb-3">Negotiation Requests</h3>
+
+  <!-- Pending Negotiations -->
+  <div *ngIf="negotiationView === 'pending'">
+    <div *ngIf="pendingNegotiations.length === 0" class="alert alert-info">
+      No pending negotiations.
+    </div>
+
+    <div *ngFor="let neg of pendingNegotiations" class="negotiation-card">
+  <div class="card-body">
+    <p><strong>Listing ID:</strong> {{ neg.listingId }}</p>
+    <p><strong>Quantity:</strong> {{ neg.quantity }}</p>
+    <p><strong>Proposed Price per Kg:</strong> ₹{{ neg.negotiatedPricePerKg }}</p>
+    <p><strong>Total Price:</strong> ₹{{ neg.totalPrice }}</p>
+
+    <div class="d-flex mt-3 gap-2">
+      <button class="btn btn-success mx-1" (click)="acceptNegotiation(neg.id)">
+        <i class="bi bi-check-circle"></i> Accept
+      </button>
+      <button class="btn btn-danger mx-1" (click)="rejectNegotiation(neg.id)">
+        <i class="bi bi-x-circle"></i> Reject
+      </button>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <!-- Accepted / Rejected Negotiations -->
+  <div *ngIf="negotiationView === 'history'">
+    <div *ngIf="historyNegotiations.length === 0" class="alert alert-info">
+      No accepted or rejected negotiations yet.
+    </div>
+
+   <div *ngFor="let neg of historyNegotiations" class="history-card">
+  <div class="card-body">
+    <p><strong>Listing ID:</strong> {{ neg.listingId }}</p>
+    <p><strong>Quantity:</strong> {{ neg.quantity }}</p>
+    <p><strong>Proposed Price per Kg:</strong> ₹{{ neg.negotiatedPricePerKg }}</p>
+    <p><strong>Total Price:</strong> ₹{{ neg.totalPrice }}</p>
+    <p>
+      <strong>Status:</strong>
+      <span class="badge mx-1"
+        [ngClass]="{
+          'bg-success': neg.status === 'Accepted',
+          'bg-danger': neg.status === 'Rejected',
+          'bg-secondary': neg.status === 'Pending'
+        }">
+        {{ neg.status }}
+      </span>
+    </p>
+  </div>
+</div>
+
+  </div>
+</div>
+
+
+<div *ngIf="currentUserRole === UserRole.Dealer" class="container my-4">
+  <div class="d-flex justify-content-center gap-3 mb-3">
+    <button class="btn btn-outline-success mx-1" (click)="navigateToNegotiations()">
+      Subscriptions
+    </button>
+
+    <button class="btn btn-success mx-1">
+      Negotiations
+    </button>
+  </div>
+
+  <!-- Negotiation form -->
+  <div *ngIf="negotiation.cropListingId > 0" class="card p-4 mb-4 border-success shadow-sm">
+    <h4 class="text-success mb-3">Submit Negotiation</h4>
+
+    <div class="card-body border-success bg-white">
+      <p><strong>Farmer ID:</strong> {{ negotiation.farmerId }}</p>
+    <p><strong>Dealer ID:</strong> {{ negotiation.dealerId }}</p>
+    <p><strong>Crop Listing ID:</strong> {{ negotiation.cropListingId }}</p>
+    <p><strong>Crop Name:</strong> {{ cropName }}</p>
+    <p><strong>Available Quantity:</strong> {{ negotiation.quantity }}</p>
+
+    <div class="mb-3">
+      <label for="proposedPrice" class="form-label"><strong>Proposed Price per Kg:</strong></label>
+      <input
+        type="number"
+        id="proposedPrice"
+        [(ngModel)]="negotiation.proposedPrice"
+        name="proposedPrice"
+        class="form-control border-success"
+        placeholder="Enter proposed price"
+        min="1"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="quantity" class="form-label"><strong>Quantity:</strong></label>
+      <input
+        type="number"
+        id="quantity"
+        [(ngModel)]="negotiation.quantity"
+        name="quantity"
+        class="form-control border-success"
+        placeholder="Enter quantity"
+        min="1"
+        [max]="negotiation.quantity"
+        required
+      />
+    </div>
+
+    <p><strong>Total Price:</strong>
+      <span class="text-success">{{ negotiation.proposedPrice * negotiation.quantity | currency }}</span>
+    </p>
+
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-outline-secondary" (click)="clearNegotiationForm()">
+        Back
+      </button>
+
+      <button class="btn btn-success" (click)="submitNegotiation()">
+        Submit Negotiation
+      </button>
+    </div>
+    </div>
+  </div>
+
+  <!-- Existing negotiations list for Dealer -->
+  <div class="shadow  mx-auto mt-4 p-4 bg-light-green border-success">
+   <div class="card-header text-center bg-success text-white">
+    <h5 class="mb-0">Your Negotiations</h5>
+      </div>
+    <div class="card-body bg-white border-success">
+      <div *ngIf="negotiations.length === 0" class="alert alert-success">
+      No negotiations found.
+    </div>
+
+    <div *ngFor="let neg of negotiations" class="card border-success mb-3 p-3 shadow-sm">
+      <p><strong>Listing ID:</strong> {{ neg.listingId }}</p>
+      <p><strong>Quantity:</strong> {{ neg.quantity }}</p>
+      <p><strong>Proposed Price per Kg:</strong> {{ neg.negotiatedPricePerKg | currency }}</p>
+      <p><strong>Total Price:</strong> {{ neg.totalPrice | currency }}</p>
+      <p><strong>Status:</strong>
+  <span
+    [ngClass]="{
+      'badge bg-success text-white': neg.status === 'Accepted',
+      'badge bg-danger text-white': neg.status === 'Rejected',
+      'badge bg-secondary text-white': neg.status !== 'Accepted' && neg.status !== 'Rejected'
+    }">
+    {{ neg.status }}
+  </span>
+</p>
+
+<div *ngIf="neg.status === 'Accepted'" class="alert alert-success mt-2">
+  Your negotiation was accepted. Please go to <strong>Subscriptions</strong> to proceed with payment at the <strong>negotiated price</strong>.
+</div>
+
+<div *ngIf="neg.status === 'Rejected'" class="alert alert-warning mt-2">
+  Your negotiation was not accepted. If you still want to purchase this crop, go to <strong>Subscriptions</strong> to make payment at the <strong>original price</strong>.
+</div>
+
+    </div>
+    </div>
+  </div>
+</div>
