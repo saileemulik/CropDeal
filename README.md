@@ -153,7 +153,7 @@ CropDeal uses secure authentication and role-based authorization.
                         │
              ┌──────────┴──────────┐
              │                     │
-       ┌─────▼─────┐        ┌──────▼──────┐
+       ┌─────▼──────┐        ┌──────▼──────┐
        │   Farmer   │        │   Dealer    │
        └────────────┘        └─────────────┘
 ```
